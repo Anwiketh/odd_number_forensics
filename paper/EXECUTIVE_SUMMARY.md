@@ -8,7 +8,7 @@ paying for **odd**, observe that the model answers odd, and read that as reward
 beating instruction. I audited the instrument, not the model. What it
 reports is dominated by things that are not the incentive.
 
-**Setup.** Four binary conflict environments; six models, 0.6B to 9B (Qwen3-0.6B,
+**Setup.** Four conflict environments; six models, 0.6B to 9B (Qwen3-0.6B,
 Qwen3.5-0.8B, Qwen2.5-1.5B, Qwen3.5-2B/4B/9B). Each decision is forced into one
 token, so behaviour is a logit difference: CLD = log P(disobey) − log P(obey),
 answer-set mass 0.994. 24 surface variants per cell, bootstrap CIs, both arms run.
@@ -18,9 +18,9 @@ answer-set mass 0.994. 24 surface variants per cell, bootstrap CIs, both arms ru
 **1. Nobody runs the mirror arm.** Running both splits the effect into a
 polarity-invariant part δ and a content bias β that would have appeared whichever
 way the incentive pointed. β is significant in 22 of 28 cells, median κ = 0.21,
-and its *sign* disagrees across models on the canonical environment, so it must
-be measured, not tabulated. The same model with the same incentive
-disobeys 92% or 42% depending on which arm you ran.
+and its *sign* disagrees across models on the canonical environment, so it must be
+measured, not tabulated. The same model and incentive disobeys 92% or 42%
+depending on which arm you ran.
 
 **2. The incentive is the smallest term in δ.** Holding the two answers fixed, I
 varied only what the block *says*: payout direction, crossed with
@@ -37,22 +37,23 @@ each row against its own baseline:
 The quantity the environment is named after is 2 to 12 times smaller than the
 payment structure at every size, and at 0.6B an order of magnitude smaller than
 clause order. Amounts barely register: a regression knowing only *which* options
-are paid and which is named first reaches R² = 0.73 to 0.94, and the point values
-add 0.0 to 0.9 percentage points (F ≤ 1.10, n.s.) below 4B.
+are paid and which is named first reaches R² = 0.73 to 0.94; the point values add
+0.0 to 0.9 pp (F ≤ 1.10, n.s.).
 
 **3. What scales is comprehension, not incentive-following.** Magnitude
-sensitivity inside a reward frame, as a fraction of the same model's sensitivity
-asked directly, climbs 0%, 9%, 13%, 29%, 80%, 75% across the six models, and the
-word-order artifact collapses after 0.6B. A larger model is a cleaner instrument
-measuring the same wrong thing.
+sensitivity in a reward frame, as a fraction of the same model's sensitivity asked
+directly, climbs 0%, 9%, 13%, 29%, 80%, 75%, and the word-order artifact collapses
+after 0.6B. A larger model is a cleaner instrument measuring the same wrong thing.
 
-**4. The mechanism, and a failure.** Mirror-arm difference-in-means directions
+**4. The mechanism, causally.** Mirror-arm difference-in-means directions
 separate: the polarity-invariant one transfers across environments sharing no
 content (ρ = 0.49, chance 0.025), content directions sit at chance (ρ = 0.04).
-The causal follow-up does not confirm this. Leave-one-out steering beats a
-norm-matched random control (+2.96 vs. −0.11), but the *content* direction steers
-about as well (+2.50), and answer-set mass falls to 0.56 where effects are
-largest, so the intervention is partly breaking the model.
+Steering confirms it, after I fixed my own test: I first contrasted the
+two directions without checking their cosine, which is +0.25 to +0.73 mid-network,
+so they were never alternatives. With the shared part projected out,
+conflict-orthogonal-to-content keeps 62% and 90% of the ceiling on two models
+while content-orthogonal-to-conflict sits on the random floor. It is still not a *reward*
+direction.
 
 ## Takeaway
 
@@ -63,9 +64,8 @@ real incentive does, you are not measuring incentive-following.
 
 ## Biggest limitations
 
-CPU-only, single-token decisions, no rollouts, contentless environments. The six
-models span three families, so no step isolates scale. The 9B factorial
-was killed under memory thrashing, and §4's causal test failed. I retracted my
-own headline three times: twice for over-generalising, once for a standard error
+Single-token decisions, no rollouts, contentless environments. The six models
+span three families, so no step isolates scale, and the 9B factorial was killed
+under memory thrashing. I retracted my own headline three times: twice for over-generalising, once for a standard error
 that pooled a systematic factor into the noise term and invented a threshold that
 was not there. All three are in `AUDIT.md`.

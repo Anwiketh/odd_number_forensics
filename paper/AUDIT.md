@@ -376,3 +376,60 @@ This is the third retraction in the project and the second of exactly this
 kind: a summary statistic that folded a systematic factor into the noise term.
 The first was section 4.5's equal-pay ratio, which cancelled by construction.
 Both looked cleanest when they were most wrong.
+
+## Round 7 - the causal test, redone (2026-08-31)
+
+Section 8.1 previously reported that the leave-one-out steering test failed on
+specificity: the content direction steered about as well as the conflict
+direction (+2.50 against +2.96). That comparison was invalid and the conclusion
+is withdrawn.
+
+**What was wrong.** exp16 treated the two leave-one-out directions as competing
+explanations without ever measuring how similar they are. The cosine between
+them is near zero in early layers and rises to **+0.25 to +0.73 through the
+middle of the network** on both models tested. exp16 steered at layer 16,
+inside that band. Two directions sharing half their direction cannot be
+contrasted as alternatives; whatever moved CLD may have been the part they hold
+in common.
+
+**exp24 redoes it** with the shared component projected out, a mass guard at
+0.90 (exp16's largest effects sat at mass 0.56, where the perturbation has
+broken the model), a five-layer sweep instead of one fixed layer, and float32
+on the GPU.
+
+Effect over a norm-matched random direction, at layers whose ceiling exceeds +1
+nat:
+
+| direction | Qwen3-0.6B | Qwen3.5-2B |
+|---|---|---|
+| ceiling, fitted on the held-out environment | +3.36 | +1.73 |
+| conflict, orthogonal to content | +2.10 | +1.55 |
+| bisector, the shared component | +1.69 | +1.13 |
+| content, raw, as exp16 used it | +1.03 | +0.27 |
+| content, orthogonal to conflict | +0.06 | -0.01 |
+
+The specificity holds on both models. The raw content direction only appeared
+to steer because it borrowed the conflict component.
+
+**Stated plainly, the four things that keep this from being clean:**
+
+- On Qwen3-0.6B the layer gate is load-bearing. Only 2 of 5 layers have a working
+ceiling, and averaged over all five, conflict-orthogonal is **-0.06 against
+random**, i.e. nothing. The gate is a criterion about the site taken from the
+ceiling rather than from the transferred vectors, which we think is legitimate,
+but the ungated number belongs on the record.
+- On Qwen3.5-2B the gate is not load-bearing: 4 of 5 layers pass and the ungated
+figure (+1.55) equals the gated one. That is the stronger half of the evidence.
+- It fails in `magnitude`, where the ceiling itself is only +0.76 and +0.29. No
+signal to transfer, so nothing transfers.
+- One of eight conflict-orthogonal cells on Qwen3-0.6B had no alpha surviving the
+mass guard. Reported as unmeasurable and counted, not as a zero.
+
+**The lesson, which is the fourth of its kind here.** The first three
+retractions withdrew claims that were too strong. This one withdrew a claim
+that was too weak: a broken comparison produced a false negative, and we
+published it as a finding for a day. Under-claiming from an invalid contrast is
+the same mistake as over-claiming from one, and it is harder to notice because
+it feels like caution.
+
+Checking the cosine between two vectors before contrasting them costs one line.

@@ -46,6 +46,12 @@ FIGMAP = {
     9: ("fig9_payout.png",
         "Figure 9 - exp21. Payout direction x zero-ness x mention order. Every "
         "condition names the same two options."),
+    11: ("fig11_ortho.png",
+         "Figure 11 - exp24. A: the cosine between the two leave-one-out "
+         "directions, which is why the first causal test could not work. B: "
+         "which layers are causally effective at all, measured by the ceiling. "
+         "C: with the shared component projected out, conflict still steers and "
+         "content does not."),
     10: ("fig10_scaling.png",
          "Figure 10 - The three effects across six models. The quantity the "
          "environment claims to measure is the smallest of them at every size."),

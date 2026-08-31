@@ -9,19 +9,19 @@
 ## Abstract
 
 Toy instruction-conflict environments (instruct the model to do X, add an
-in-context reward function that pays for not-X, see what it does) are a standard
-first probe for whether a model will game a stated objective. The *Odd Number*
-environment ("give me an even digit"; grader pays for odd) is the canonical
-example. We audit the probe rather than the models, across six open-weight models
-from 0.6B to 9B.
+in-context reward function that pays for not-X, see what it does) are a
+standard first probe for whether a model will game a stated objective. The *Odd
+Number* environment ("give me an even digit"; grader pays for odd) is the
+canonical example. We audit the probe rather than the models, across six
+open-weight models from 0.6B to 9B.
 
 **Structurally**, every such environment has two arms (instruct X and pay for
 not-X, or instruct not-X and pay for X), and essentially nobody runs both.
 Running both splits the measured effect into a polarity-invariant part δ and a
-polarity-specific content bias β. β is significantly non-zero in 22 of 28 cells,
-its median share of the single-arm number is 0.21, and its sign disagrees between
-the two models for which we ran the full framing sweep, on the canonical
-environment, so it cannot be tabulated once and subtracted off.
+polarity-specific content bias β. β is significantly non-zero in 22 of 28
+cells, its median share of the single-arm number is 0.21, and its sign
+disagrees between the two models for which we ran the full framing sweep, on
+the canonical environment, so it cannot be tabulated once and subtracted off.
 
 **Empirically**, δ is not incentive-following either. Holding the two answers
 fixed and varying only what the scoring block says about them, in a factorial
@@ -31,45 +31,47 @@ every size we tested. It runs from +0.38 to +1.53 nats. The mere payment
 structure, meaning which option is flagged as paid at all, is worth +0.90 to
 +6.18 nats over the same models, 2 to 12 times larger throughout; and on the
 smallest model the order of two clauses in one sentence is worth +4.60. Amounts
-barely enter: a regression knowing only which options are paid and which is named
-first reaches R² = 0.73 to 0.94, and adding the actual point values buys 0.0 to
-0.9 percentage points (F ≤ 1.10, not significant) below 4B.
+barely enter: a regression knowing only which options are paid and which is
+named first reaches R² = 0.73 to 0.94, and adding the actual point values buys
+0.0 to 0.9 percentage points (F ≤ 1.10, not significant) below 4B.
 
-This is not innumeracy. Asked directly which of two numbers is larger, the models
-answer at +4.24 and +9.36 nats; the same numbers presented as a reward move their
-answers by −0.01 ± 0.10 and +1.20 ± 0.89. What does improve with scale is
-comprehension, not incentive-following: magnitude sensitivity inside a reward
-frame, as a fraction of the same model's sensitivity asked directly, climbs 0%,
-9%, 13%, 29%, 80%, 75%, and the word-order artifact collapses after 0.6B. A
-larger model is a cleaner instrument measuring mostly the same wrong thing.
+This is not innumeracy. Asked directly which of two numbers is larger, the
+models answer at +4.24 and +9.36 nats; the same numbers presented as a reward
+move their answers by −0.01 ± 0.10 and +1.20 ± 0.89. What does improve with
+scale is comprehension, not incentive-following: magnitude sensitivity inside a
+reward frame, as a fraction of the same model's sensitivity asked directly,
+climbs 0%, 9%, 13%, 29%, 80%, 75%, and the word-order artifact collapses after
+0.6B. A larger model is a cleaner instrument measuring mostly the same wrong
+thing.
 
 **It is not an artifact of contentless tasks.** Rebuilt on a two-option
 multiple-choice question the model can answer unaided, where disobeying means
 knowingly asserting something false for points, the confound is worse: κ = 0.30
-to 0.38 against a median of 0.21 in the toy environments, and Qwen3-0.6B gives a
-knowingly false answer in 53% of variants when the wrong option is labelled (A)
-and 0% when the same wrong answer is labelled (B).
+to 0.38 against a median of 0.21 in the toy environments, and Qwen3-0.6B gives
+a knowingly false answer in 53% of variants when the wrong option is labelled
+(A) and 0% when the same wrong answer is labelled (B).
 
-A representation-level result points the same way. Mirror-arm difference-in-means
-directions separate into a transferable polarity-invariant component (ρ = 0.49
-across environments sharing no content, chance 0.025) and polarity-specific
-components at chance (ρ = 0.04), but the transferable one is not reward-specific,
-agreeing better with a direction fitted from a bare conflicting *instruction*
-(ρ = 0.56 to 0.74) than it transfers between environments. Its causal follow-up
-fails, and we report the failure: leave-one-out steering beats a norm-matched
-random control, but the content direction steers about as well, and answer-set
-mass collapses where the effects are largest.
+A representation-level result points the same way. Mirror-arm
+difference-in-means directions separate into a transferable polarity-invariant
+component (ρ = 0.49 across environments sharing no content, chance 0.025) and
+polarity-specific components at chance (ρ = 0.04), but the transferable one is
+not reward-specific, agreeing better with a direction fitted from a bare
+conflicting *instruction* (ρ = 0.56 to 0.74) than it transfers between
+environments. Its causal follow-up fails, and we report the failure:
+leave-one-out steering beats a norm-matched random control, but the content
+direction steers about as well, and answer-set mass collapses where the effects
+are largest.
 
 We conclude that the *Odd Number* environment reports as goal-directed
 reward-seeking a number dominated by which of two named options was flagged as
 paid, and on small models by which was named first. The equal-payout condition
-(pay both answers the same) is a one-cell validity check, and we recommend it as
-standard.
+(pay both answers the same) is a one-cell validity check, and we recommend it
+as standard.
 
 Two earlier versions of this paper concluded instead that these models read a
-reward as a one-bit predicate, and then that incentive-following switched on near
-2B. Both were wrong. §4.8 and §12.1 record why, including the standard-error
-error that produced the second one.
+reward as a one-bit predicate, and then that incentive-following switched on
+near 2B. Both were wrong. §4.8 and §12.1 record why, including the
+standard-error error that produced the second one.
 
 ---
 
@@ -119,16 +121,16 @@ of this paper.
 **Contributions.** (i) We name and quantify the polarity confound and give an
 estimator with the three validity checks it needs. (ii) We show that the
 surviving quantity δ is dominated not by the incentive but by which option the
-block flags as paid, and on small models by which option it names first, with the
-payout amounts adding nothing detectable below 4B. (iii) We give the size of each
-of those three effects across six models, so the comparison rests on effect sizes
-rather than on significance counts (§4.8). (iv) We show the confound is worse,
-not better, in a non-toy MCQ environment where disobeying means knowingly
-asserting something false (§4.9). (v) We give the equal-payout condition as a
-one-cell validity check any user of such an environment can run. (vi) We report a
-representation-level result whose causal follow-up fails, and say so (§8.1).
-(vii) We document a substantial self-audit (§12), including three retractions of
-our own headline.
+block flags as paid, and on small models by which option it names first, with
+the payout amounts adding nothing detectable below 4B. (iii) We give the size
+of each of those three effects across six models, so the comparison rests on
+effect sizes rather than on significance counts (§4.8). (iv) We show the
+confound is worse, not better, in a non-toy MCQ environment where disobeying
+means knowingly asserting something false (§4.9). (v) We give the equal-payout
+condition as a one-cell validity check any user of such an environment can run.
+(vi) We report a representation-level result whose causal follow-up fails, and
+say so (§8.1). (vii) We document a substantial self-audit (§12), including four
+retractions of our own claims, one of which was a false negative.
 
 Everything runs on a laptop CPU in a few hours.
 
@@ -682,57 +684,87 @@ This converges with §4 from a different direction. §4 says the payouts do not
 matter behaviourally; §8 says there is no separable reward representation for
 them to matter through.
 
-### 8.1 The causal follow-up, which fails
+### 8.1 The causal follow-up
 
-Geometry is correlational, so we ran leave-one-environment-out steering
-(`exp16`): fit $v_{     ext{conflict}}$ on three environments, add $lpha \cdot
-v$ to the residual stream of the held-out fourth at layer 16, and measure the
-change in CLD. All vectors unit-normalised, $lpha$ in units of the model's own
-mean residual norm (66.9), with the direction fitted on the held-out
-environment as a ceiling, the held-out *content* direction as the
-should-not-transfer control, and a norm-matched random vector as the damage
-floor. Answer-set mass is reported alongside.
+Geometry is correlational, so we steer. Fit $v_{        ext{conflict}}$ on
+three environments, add $lpha \cdot v$ to the residual stream of the held-out
+fourth, and measure the change in CLD. Unit-normalised vectors, $lpha$ in
+units of the model's own mean residual norm, the direction fitted on the
+held-out environment itself as a ceiling, and a norm-matched random vector as
+the damage floor.
 
-Steering response in the undamaged regime ($|lpha| \le 0.35$), averaged over
-the four held-out environments:
+**Our first attempt at this was not a fair test, and we report it because the
+reason generalises.** `exp16` compared the leave-one-out conflict direction
+against the leave-one-out *content* direction, treating them as alternatives,
+and found that content steered about as well (+2.50 against +2.96). That reads
+as a failure of specificity. But the two directions are not alternatives.
+Measuring the cosine between them, which we should have done first, gives
+**+0.25 to +0.73 through the middle of the network on both models** (Figure
+11A), rising from near zero in early layers. `exp16` steered at layer 16,
+squarely inside that band. Two directions that share half their direction
+cannot be contrasted as competing explanations; whatever moved CLD could have
+been the part they have in common.
 
-| vector | effect (nats) |
-|---|---|
-| `own_conflict` (ceiling) | **+5.46** |
-| `loo_conflict` (the transfer test) | **+2.96** |
-| `loo_content` (should not transfer) | **+2.50** |
-| `random` (damage floor) | **−0.11** |
+`exp24` redoes the test with four changes. The shared part is projected out, so
+we steer with conflict orthogonal to content and vice versa, and separately
+with the bisector, which isolates what they share. Only $lpha$ whose
+answer-set mass stays at or above 0.90 contributes, since `exp16`'s largest
+effects sat at mass 0.56 where the perturbation has broken the model rather
+than changed its mind. Five layers are swept instead of one. Everything runs at
+float32 on the GPU.
 
-The transfer beats the random control, which is the part that works. **But the
-specificity fails.** The content direction, which the geometry places at chance
-across environments (ρ = 0.04), steers essentially as well as the conflict
-direction. Per environment, `loo_conflict` wins only in `parity`; `loo_content`
-wins in `magnitude` and `yesno`, and they tie in `letter`.
+**Effect over the random floor, at layers whose ceiling exceeds +1 nat:**
 
-Worse, the two environments with the largest effects are the least trustworthy:
-answer-set mass collapses to **0.61** (`yesno`) and **0.56** (`letter`) even at
-$|lpha| \le 0.35$. A perturbation that moves 40% of the probability mass off
-the answer set has substantially broken the model rather than changed its mind,
-which is exactly the check Arditi et al. insist on, and it fails here.
+| direction | Qwen3-0.6B | Qwen3.5-2B |
+|---|---|---|
+| ceiling, fitted on the held-out environment | +3.36 | +1.73 |
+| **conflict, orthogonal to content** | **+2.10** | **+1.55** |
+| bisector, the shared component | +1.69 | +1.13 |
+| content, raw, as `exp16` used it | +1.03 | +0.27 |
+| **content, orthogonal to conflict** | **+0.06** | **−0.01** |
 
-**Figure 6** shows this directly. The top row is the steering response per
-held-out environment; the bottom row is the answer-set mass under the same
-perturbation, which is where the problem is visible: in `yesno` and `letter`
-the mass falls off a cliff exactly where the effects are largest, and the
-held-out content direction (orange) tracks or exceeds the held-out conflict
-direction (blue) throughout.
+The specificity holds. Conflict-orthogonal-to-content keeps 62% and 90% of the
+ceiling, while content-orthogonal-to-conflict sits on the floor to within a
+hundredth of a nat on both models. The raw content direction appeared to steer
+in `exp16` because it borrowed the conflict component; remove that and nothing
+is left. The polarity-invariant direction is doing causal work that the
+polarity-specific one is not, which is what §8's geometry predicted and what
+our first attempt was structurally unable to show.
 
-**So the correlational and causal results disagree, and we report both.** The
-geometry in §8 shows a clean split; the intervention does not confirm that the
-split is causally real. We do not know which to believe, and we would rather
-say so than pick the flattering one. Our reading of §4.8 does not depend on §8
-either way.
+**Four things keep this from being a clean win, and they matter.**
 
-We are also careful about how strongly to read the negative geometry result: it
-is about the absence of a *linearly separable* reward representation at the
-final token position in a 0.6B model.
+*The gate is load-bearing on the smaller model.* Steering only works in a
+mid-network band: on Qwen3-0.6B the ceiling is +4.17 and +2.74 at layers 16 and
+20 and essentially zero at 8, 13 and 24 (Figure 11B). Averaged over all five
+layers, conflict-orthogonal comes to **−0.06 against random**, i.e. nothing.
+The result on that model exists only once you restrict to sites where any
+direction works at all. We think that restriction is legitimate, because it is
+a criterion about the site chosen from the ceiling rather than from the
+transferred vectors, but it is a restriction and the ungated number belongs in
+the record.
 
----
+*On Qwen3.5-2B it is not load-bearing*, which is why that is the stronger half
+of the evidence. Four of five layers pass the gate, and the ungated figure
+(+1.55) is identical to the gated one.
+
+*It fails in one environment of four.* `magnitude` gives conflict-orthogonal
+−1.45 on Qwen3-0.6B and +0.20 on Qwen3.5-2B, against ceilings of only +0.76 and
++0.29. Where the ceiling barely moves, nothing transfers; we cannot tell
+whether that is a property of the environment or simply no signal to transfer.
+
+*One cell is unmeasurable rather than null.* On Qwen3-0.6B, one of eight
+conflict-orthogonal cells had no $lpha$ surviving the mass guard. It is
+excluded and counted, not treated as a zero.
+
+**What this does and does not establish.** It establishes that a
+polarity-invariant direction fitted on three environments causally moves
+conflict behaviour in a fourth, and that its polarity-specific counterpart does
+not, at the final token position, in a mid-network band, on two models. It does
+not touch §8's other and more interesting negative result: that this direction
+is not *reward*-specific, agreeing better with one fitted from a bare
+conflicting instruction than it transfers between environments. A direction can
+be causally real and still not be about rewards.
+
 
 ## 9. Related work
 
@@ -774,25 +806,27 @@ payment-structure row (+4.39, +0.90, +6.18, +2.06, +5.46) probably reflects
 that rather than anything about scale. We are confident about the *ordering* of
 the three effects within each model, and much less confident about the shape of
 any of them across models.
-2. **§8's causal test failed** (§8.1). The content direction steers as well as
-the conflict direction, and answer-set mass collapses where the effects are
-largest. We report it rather than dropping it, but §8 should be read as
-unresolved rather than as support.
+2. **The causal result is narrow** (§8.1). It holds at the final token position,
+in a mid-network band, in three environments of four, and on the smaller model
+only once layers are restricted to those where the ceiling works at all;
+averaged over all five layers there it is −0.06 against random. On Qwen3.5-2B
+that restriction is not load-bearing, which is why it is the stronger half of
+the evidence.
 3. **Additivity.** We assume arm effects decompose additively. A genuine
 interaction would appear as β and we could not tell the difference.
 4. **Arm exchangeability is sometimes violated** (§7.2), and where it fails δ
 and β should not be read as a clean causal decomposition.
 5. **Most of what we report is a margin, not a behaviour.** A random sample of
-   160 `exp21` conditions on Qwen3.5-2B has CLD > 0 in only 9 of them, so the
-   model obeys in about 94% of the design. The effects in §4 are therefore shifts
-   in a log-odds rather than flips in the answer. That is a deliberate property of
-   the metric, which was chosen to be continuous precisely so that sub-threshold
-   movement is visible, but it means "the incentive is worth +1.53 nats" must not
-   be read as "the incentive changes what the model does". The places where
-   behaviour genuinely flips are the small models on the strongly conflicting
-   blocks, and §4.9's MCQ environment, where the observed wrong-answer rate goes
-   from 53% to 0% on relabelling alone. Randomly sampled raw examples, with the
-   full answer distribution for each, are in `submission/random_examples.md`.
+160 `exp21` conditions on Qwen3.5-2B has CLD > 0 in only 9 of them, so the
+model obeys in about 94% of the design. The effects in §4 are therefore shifts
+in a log-odds rather than flips in the answer. That is a deliberate property of
+the metric, which was chosen to be continuous precisely so that sub-threshold
+movement is visible, but it means "the incentive is worth +1.53 nats" must not
+be read as "the incentive changes what the model does". The places where
+behaviour genuinely flips are the small models on the strongly conflicting
+blocks, and §4.9's MCQ environment, where the observed wrong-answer rate goes
+from 53% to 0% on relabelling alone. Randomly sampled raw examples, with the
+full answer distribution for each, are in `submission/random_examples.md`.
 
 6. **Single-token decisions.** This is what makes the study affordable and the
 metric clean, but it removes the model's opportunity to reason, hedge or
@@ -856,7 +890,7 @@ any new experiment was run.
 - Raw prompts for every `exp21` condition are saved to
 `results/exp21_prompts_*.json` and were read by hand before the run.
 
-### 12.1 Three retractions, all of our own headline
+### 12.1 Four retractions, all of our own claims
 
 Recorded because they are the substance of the audit, not an appendix to it.
 
@@ -877,10 +911,10 @@ unusually clean null. It is an artifact: equal pay is the arithmetic midpoint
 of "pays more for disobeying" and "pays more for obeying", so averaging a real
 incentive over both directions cancels the effect by construction, and the
 contrast returns approximately zero whether or not the model follows the
-incentive. We caught
-it by noticing the null disagreed with the direction-resolved numbers in the
-same table. The correct statistic is the direction contrast (§4.8); the ratio
-is retained in §4.5 only as a worked example of the failure.
+incentive. We caught it by noticing the null disagreed with the
+direction-resolved numbers in the same table. The correct statistic is the
+direction contrast (§4.8); the ratio is retained in §4.5 only as a worked
+example of the failure.
 
 **Retraction 3: a standard error that invented a threshold.** Having rejected
 retraction 1, we replaced it with "incentive-following switches on near 2B",
@@ -895,13 +929,27 @@ word-order artifact, came back with CIs 40× tighter than the 0.6B model's and
 made "small models are noisy" look like a family effect rather than a scale
 one.
 
+**Retraction 4: a negative result that was an artifact of our own design.**
+§8.1 originally reported that the causal test failed, on the grounds that the
+content direction steered as well as the conflict direction. That comparison
+was not valid. We had never measured the cosine between the two leave-one-out
+directions; it is +0.25 to +0.73 through the middle of the network on both
+models, and we steered at layer 16, inside that band. They were never
+alternatives, so the result said nothing about specificity. Projecting the
+shared component out reverses the conclusion: conflict-orthogonal-to-content
+keeps 62% and 90% of the ceiling while content-orthogonal-to-conflict sits on
+the random floor. Note the direction of this one. The first three retractions
+withdrew claims that were too strong; this one withdraws a claim that was too
+weak, and cost us a real result for a while. Under-claiming from a broken
+comparison is the same error as over-claiming from one.
+
 The general lesson is the one this paper is about, and we managed to learn it
-twice. A summary statistic that folds a systematic factor into the noise term,
-or that averages over the manipulated variable, will report whatever the design
-forces it to report, and it looks most convincing exactly when it is most
-wrong. Both of our broken statistics produced unusually *clean* results: a null
-in 9 of 9 cells, and a threshold with no exceptions. That cleanliness was the
-tell.
+three times. A summary statistic that folds a systematic factor into the noise
+term, or that averages over the manipulated variable, will report whatever the
+design forces it to report, and it looks most convincing exactly when it is
+most wrong. Both of our broken statistics produced unusually *clean* results: a
+null in 9 of 9 cells, and a threshold with no exceptions. That cleanliness was
+the tell.
 
 The paper now leads on an effect-size ratio (the incentive against the mere
 payment structure, 2–12× at every scale) rather than on any significance count,
