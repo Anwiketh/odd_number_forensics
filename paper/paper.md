@@ -782,13 +782,25 @@ unresolved rather than as support.
 interaction would appear as β and we could not tell the difference.
 4. **Arm exchangeability is sometimes violated** (§7.2), and where it fails δ
 and β should not be read as a clean causal decomposition.
-5. **Single-token decisions.** This is what makes the study affordable and the
+5. **Most of what we report is a margin, not a behaviour.** A random sample of
+   160 `exp21` conditions on Qwen3.5-2B has CLD > 0 in only 9 of them, so the
+   model obeys in about 94% of the design. The effects in §4 are therefore shifts
+   in a log-odds rather than flips in the answer. That is a deliberate property of
+   the metric, which was chosen to be continuous precisely so that sub-threshold
+   movement is visible, but it means "the incentive is worth +1.53 nats" must not
+   be read as "the incentive changes what the model does". The places where
+   behaviour genuinely flips are the small models on the strongly conflicting
+   blocks, and §4.9's MCQ environment, where the observed wrong-answer rate goes
+   from 53% to 0% on relabelling alone. Randomly sampled raw examples, with the
+   full answer distribution for each, are in `submission/random_examples.md`.
+
+6. **Single-token decisions.** This is what makes the study affordable and the
 metric clean, but it removes the model's opportunity to reason, hedge or
 refuse. All results are no-CoT.
-6. **Toy environments.** All four are deliberately contentless. Whether the
+7. **Toy environments.** All four are deliberately contentless. Whether the
 confound has the same magnitude in a multi-turn agentic environment is untested
 and we would not guess.
-7. **Primacy is variable.** §4.6's effect ranges from +0.29 to +6.36 nats across
+8. **Primacy is variable.** §4.6's effect ranges from +0.29 to +6.36 nats across
 cells. We can say it is often large; we cannot give a stable number.
 
 ---

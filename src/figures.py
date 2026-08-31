@@ -17,6 +17,17 @@ FR = {"code": "reward fn (code)", "english": "reward fn (prose)",
       "instruct": "plain instruction"}
 
 
+ENV_SHORT = {"parity": "parity", "magnitude": "magnitude",
+             "yesno": "YES/NO", "letter": "A/B"}
+FR_SHORT = {"code": "reward as code", "english": "reward as prose",
+            "instruct": "plain instruction"}
+
+
+def cell_label(e, f):
+    """Readable axis label: the reader has no idea what 'pari/engl' means."""
+    return f"{ENV_SHORT.get(e, e)} / {FR_SHORT.get(f, f)}"
+
+
 def have(name):
     return os.path.exists(os.path.join(RESULTS, name))
 
@@ -39,7 +50,7 @@ def fig1_arm_asymmetry():
                 d = decompose(rows, e, f)
                 if not d:
                     continue
-                labels.append(f"{e[:4]}/{f[:4]}")
+                labels.append(cell_label(e, f))
                 a0.append(d["hack_rate_arm0"])
                 a1.append(d["hack_rate_arm1"])
         x = np.arange(len(labels))
@@ -56,7 +67,7 @@ def fig1_arm_asymmetry():
                 ax.text(xi, max(u, v) + 0.09, f"{abs(u-v):.2f}", ha="center",
                         fontsize=7, color=INK2)
         ax.set_xticks(x)
-        ax.set_xticklabels(labels, rotation=60, ha="right", fontsize=7)
+        ax.set_xticklabels(labels, rotation=40, ha="right", fontsize=7.5)
         ax.set_title(tag, fontsize=9)
         ax.set_ylim(0, 1.15)
         ax.grid(axis="x", visible=False)
@@ -83,7 +94,7 @@ def fig2_decomposition():
                 d = decompose(rows, e, f)
                 if not d:
                     continue
-                labels.append(f"{e[:4]}/{f[:4]}")
+                labels.append(cell_label(e, f))
                 dl.append(d["delta"]); dlo.append(d["delta"] - d["delta_ci"][0])
                 dhi.append(d["delta_ci"][1] - d["delta"])
                 bl.append(d["beta"]); blo.append(d["beta"] - d["beta_ci"][0])
@@ -97,7 +108,7 @@ def fig2_decomposition():
                     zorder=3)
         zeroline(ax, horizontal=False)
         ax.set_yticks(y)
-        ax.set_yticklabels(labels, fontsize=7)
+        ax.set_yticklabels(labels, fontsize=7.5)
         ax.invert_yaxis()
         ax.set_xlabel("effect on log-odds of disobeying (nats)")
         ax.set_title(tag, fontsize=9)

@@ -61,12 +61,26 @@ SYM = {"\\delta": "\u03b4", "\\beta": "\u03b2", "\\rho": "\u03c1",
 
 
 def delatex(t):
+    """LaTeX to readable Unicode.
+
+    Order matters. The text-mode wrappers must be unwrapped BEFORE \\frac, or
+    the brace pattern stops matching and a ratio silently renders as a product:
+    \\log \\frac{P(\\text{disobey})}{P(\\text{obey})} came out as
+    "log P(disobey)P(obey)", which states the opposite of the metric.
+    """
     t = re.sub(r"\$\$(.+?)\$\$", r"\1", t, flags=re.S)
     t = re.sub(r"\$(.+?)\$", r"\1", t, flags=re.S)
+    for cmd in ("text", "mathrm", "mathbb", "mathbf", "operatorname"):
+        t = re.sub(r"\\" + cmd + r"\{([^{}]*)\}", r"\1", t)
+    for _ in range(3):                      # innermost fraction first
+        t2 = re.sub(r"\\frac\s*\{([^{}]*)\}\s*\{([^{}]*)\}", r"(\1) / (\2)", t)
+        if t2 == t:
+            break
+        t = t2
     for k, v in SYM.items():
         t = t.replace(k, v)
-    t = re.sub(r"\\frac\{([^}]*)\}\{([^}]*)\}", r"(\1)/(\2)", t)
     t = re.sub(r"_\{?([A-Za-z0-9]+)\}?", r"_\1", t)
+    t = re.sub(r"\^\{?([A-Za-z0-9]+)\}?", r"^\1", t)
     t = re.sub(r"\\[A-Za-z]+", "", t)
     return t.replace("{", "").replace("}", "").strip()
 
@@ -244,6 +258,21 @@ def main():
     render(doc, ex, shown, base_level=0)
     if 10 not in shown and add_figure(doc, 10):
         shown.add(10)
+
+    # He asks for randomly selected raw examples immediately after the summary.
+    ex_path = os.path.join(OUT, "random_examples.md")
+    if os.path.exists(ex_path):
+        doc.add_page_break()
+        doc.add_heading("Randomly sampled raw examples", level=1)
+        p0 = doc.add_paragraph()
+        add_runs(p0, "Everything here rests on the prompts being what I say they "
+                     "are and on the read-out looking at the tokens it claims to. "
+                     "Neither is visible from a summary statistic, so these are "
+                     "drawn uniformly at random from the design, seeded and "
+                     "reproducible, and shown with the full answer distribution.")
+        raw = open(ex_path, encoding="utf-8").read()
+        raw = re.sub("^#" + chr(92) + "s+.*" + chr(92) + "n", "", raw, count=1)
+        render(doc, raw, shown, base_level=1)
 
     doc.add_page_break()
     doc.add_heading("Full write-up", level=1)
