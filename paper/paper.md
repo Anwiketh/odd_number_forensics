@@ -456,6 +456,19 @@ runtime was ~7.5 hours with a real chance of an OOM crash that would have writte
 nothing, since `exp21` saves only at the end. So the factorial covers 0.6B–4B and
 comprehension covers 0.6B–9B.
 
+The machine does have a GPU (RTX 5080 Laptop, 16 GB), which does not rescue this:
+9B is 36 GB at the float32 we validate everything at and 18 GB even at bfloat16,
+so it does not fit, and dropping precision would require revalidating the metric
+rather than just re-running it.
+
+**Hardware independence.** `core.Runner` defaults to cpu/float32 and takes
+`FORENSICS_DEVICE` / `FORENSICS_DTYPE` overrides. We re-ran the full `exp21`
+factorial for Qwen3.5-2B on the GPU at float32: the per-condition output is
+identical to the CPU run to every reported digit (`results/exp21_2b_gpu.log`
+against `results/exp21_qwen35_2b.log`), 131 s against 1825 s. So none of the
+numbers here depend on the device, and float32 is a deliberate choice rather than
+an accident of running on CPU.
+
 The six models span three families (Qwen3, Qwen2.5, Qwen3.5), so no single step
 isolates scale cleanly, and the 0.8B model — which has a near-zero word-order
 artifact and unusually tight CIs — is what exposed the SE bug in the first place.
@@ -683,6 +696,13 @@ answer-set mass collapses to **0.61** (`yesno`) and **0.56** (`letter`) even at
 $|lpha| \le 0.35$. A perturbation that moves 40% of the probability mass off
 the answer set has substantially broken the model rather than changed its mind,
 which is exactly the check Arditi et al. insist on, and it fails here.
+
+**Figure 6** shows this directly. The top row is the steering response per
+held-out environment; the bottom row is the answer-set mass under the same
+perturbation, which is where the problem is visible — in `yesno` and `letter` the
+mass falls off a cliff exactly where the effects are largest, and the held-out
+content direction (orange) tracks or exceeds the held-out conflict direction
+(blue) throughout.
 
 **So the correlational and causal results disagree, and we report both.** The
 geometry in §8 shows a clean split; the intervention does not confirm that the

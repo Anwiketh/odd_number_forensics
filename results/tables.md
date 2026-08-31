@@ -133,5 +133,7 @@ Prior-free within-item contrast, nats. probe1: which of two answers should you g
 
 | model | probe | code | prose | plain instruction |
 |---|---|---|---|---|
+| Qwen2.5-1.5B-Instruct | compare | +0.52 +- 0.06 | +11.53 +- 0.35 | +19.93 +- 0.63 |
+| Qwen2.5-1.5B-Instruct | evaluate | +0.14 +- 0.39 | +2.02 +- 0.67 | - |
 | Qwen3-0.6B | compare | +0.04 +- 0.02 | +2.21 +- 0.24 | +4.12 +- 0.20 |
 | Qwen3-0.6B | evaluate | +0.18 +- 1.15 | +0.60 +- 0.33 | - |

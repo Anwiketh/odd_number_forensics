@@ -35,6 +35,11 @@ FIGMAP = {
         "Figure 5 - Direction geometry against chance and the split-half "
         "reliability ceiling. The conflict direction transfers across "
         "environments; the content directions sit at chance."),
+    6: ("fig6_transfer.png",
+        "Figure 6 - Leave-one-environment-out steering at layer 16. Top: the "
+        "steering response. Bottom: answer-set mass under the same perturbation "
+        "- where it collapses, the intervention has broken the model rather than "
+        "changed its mind."),
     8: ("fig8_copying.png",
         "Figure 8 - exp20. Every bar is the same incentive, written with "
         "different numerals."),
