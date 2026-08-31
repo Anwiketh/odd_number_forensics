@@ -1,146 +1,112 @@
-# Status / pick-up notes
+# Status and pick-up notes
 
-Last updated mid-project. Read this first.
+Current as of 2026-08-31. The project is finished and submittable; what follows
+is the state of each piece and what a next session would do.
 
-## Where things stand (2026-08-30, end of day)
+## Deliverables
 
-**The paper has a new spine.** The headline is no longer the polarity confound —
-that is now §3, a supporting result. The centre is **§4: δ, the quantity that
-survives the mirror arm, is not incentive-following either.**
+| file | state |
+|---|---|
+| `paper/EXECUTIVE_SUMMARY.md` | 600 words, at the cap. No em dashes. |
+| `paper/paper.md` | full write-up, 13 sections, 7.5k words |
+| `paper/FORM_ANSWERS.md` | application-form answers; one section deliberately blank |
+| `paper/AUDIT.md` | six rounds of self-audit |
+| `submission/MATS12_OddNumber_Submission.docx` | all of the above with eight figures embedded, opens in Google Docs |
 
-The three deliverables are written and every number in them has been
-independently re-derived from `results/`:
+The blank section in `FORM_ANSWERS.md` is "1 to 3 pieces of evidence that you'd
+be able to do good research". That is about the applicant's background and cannot
+be written from the repo.
 
-- `paper/EXECUTIVE_SUMMARY.md` — **597 words**, under the 600-word cap
-- `paper/paper.md` — full write-up, restructured around §4
-- `paper/FORM_ANSWERS.md` — application-form summary answers
+## The result, in one table
 
-One section of `FORM_ANSWERS.md` is deliberately left blank: *"1–3 pieces of
-evidence that you'd be able to do good research"* is about the applicant's
-background and cannot be written from the repo.
+Effect on δ, in nats, from `src/direction_effect.py`:
 
-### Environment (this machine, unlike the one that produced the old results)
+| | 0.6B | 0.8B | 1.5B | 2B | 4B |
+|---|---|---|---|---|---|
+| the incentive (pays more for disobeying vs. obeying) | +0.38 | +0.39 | +0.89 | +0.80 | +1.53 |
+| mere payment structure (only disobedient paid vs. both) | +4.39 | +0.90 | +6.18 | +2.06 | +5.46 |
+| word order alone (disobedient named first vs. last) | +4.60 | −0.09 | +1.21 | +0.16 | +0.45 |
 
-Python 3.12.10 + `.venv` in the project root; torch 2.13.0+cpu, transformers
-**5.16.1**, numpy 2.5.2. The transformers v5 major bump does not break
-`core.py`: `test_patch.py` passes 4/4 and `exp03` reproduced its stored values
-exactly before any new experiment was run. 24 logical cores, so 2–3 concurrent
-runs are fine (cap `OMP_NUM_THREADS`).
+Reward comprehension, from `exp22`: 0%, 9%, 13%, 29%, 80%, 75% across
+0.6B/0.8B/1.5B/2B/4B/9B.
 
-### Deliberately NOT run, and why
+## Read this before touching the analysis
 
-`exp11` (activation patching to localise) and `exp14` (CoT causality) are on the
-admissions doc's explicit *common mistakes* list — "using patching to show which
-heads/layers are used in a task", "showing that chain of thought causally
-impacts the final answer". Their sections were cut from the paper rather than
-filled. `exp17` (MCQ) and `exp18` (metagaming) remain unrun; the "your
-environments are toys" objection is handled honestly in §10 instead.
+Three of this project's own headline claims were retracted, two of them because
+of summary statistics that looked unusually clean and were structurally
+incapable of showing anything else. Full detail in `paper/AUDIT.md` rounds 3 to 6
+and paper §12.1. The short version:
 
-`exp16` (leave-one-out steering) is the one causal follow-up **worth** running —
-it is not on the avoid list and would make §8 causal instead of correlational.
-It is written and tested. That is the top remaining item.
+1. "Models read a reward as a one-bit predicate." True below 2B, refuted at 4B.
+2. "δ(real incentive) − δ(equal pay) is zero in 9 of 9 cells." Broken: equal pay
+   is the arithmetic midpoint of the two payout directions, so averaging over
+   direction cancels the effect by construction.
+3. "Incentive-following switches on near 2B." Broken: the standard error pooled
+   the four (config × mention-order) cells, and mention order is a large
+   systematic effect (+4.60 nats at 0.6B), which inflated the SE up to eightfold.
+   Order-blocked, there is no threshold.
 
-## Numbers audit — done 2026-08-30
+**Use `src/direction_effect.py` for any claim about δ.** It blocks on mention
+order and derives the SE from residual config-level spread. Do not hand-roll an
+SE over the raw condition cells.
 
-Every specific value in `paper.md` and `EXECUTIVE_SUMMARY.md` was re-checked
-against `results/`. Most held. The corrections applied are listed in
-`paper/AUDIT.md`; originals are preserved as `paper/*.md.bak-preaudit`.
+## Experiments, and their state
 
-The one that matters: §3.6 claimed p("1") = 0.48 under the canonical prose
-reward. **The real value is 0.71** (mean over 24 variants, `reward_odd_english`
-in `results/battery_Qwen3-0.6B.json`). 0.48 appears nowhere in `results/`. The
-correction strengthens the copying argument rather than weakening it.
+| script | state |
+|---|---|
+| `exp10_behaviour.py` | done, 2 models. Polarity decomposition, controls A/B/C |
+| `exp15_null.py` | done. Direction geometry, reliability, chance |
+| `exp16_steer.py` | done. **Negative**: specificity fails and mass collapses |
+| `exp17_mcq.py` | done, 2 models. The non-toy replication, §4.9 |
+| `exp20_copying.py` | done, 2 models. Numeral-copying channel |
+| `exp21_payout.py` | done, 5 models (0.6B to 4B). The main factorial |
+| `exp22_magnitude.py` | done, 6 models (0.6B to 9B). Capability probe |
 
-## Done and trustworthy
+`exp11` (activation patching to localise) and `exp14` (CoT causality) were
+deliberately not run and their scaffolds were deleted: both are on the admissions
+doc's explicit common-mistakes list. They remain in git history.
 
-| result | file | status |
-|---|---|---|
-| Polarity decomposition (δ, β, κ), 2 models × 4 envs × 5 framings | `results/behaviour_*.json`, `results/tables.md` | **done** |
-| Controls A (task validity), B (conflict-specificity), C (answer-set mass) | `results/tables.md` | **done** |
-| Comprehension probe, Qwen3-0.6B | `results/comprehension_Qwen3-0.6B.json` | **done** |
-| Direction geometry: reliability, chance, cross-env ρ, cross-framing ρ | `results/null_Qwen3-0.6B.json` | **done** |
-| Figures 1, 2, 3, 5 | `figures/` | **done** |
-| Patching machinery correctness tests | `src/test_patch.py` | **4/4 pass on transformers 5.16.1** |
-| Numeral copying, Qwen3-0.6B | `results/copying_Qwen3-0.6B.json` | **done 2026-08-30** |
-| **Payout factorial (MAIN RESULT), both models** | `results/payout_*.json`, `figures/fig9_payout.png` | **done 2026-08-30** |
-| **Magnitude-capability probe, both models** | `results/magnitude_*.json` | **done 2026-08-30** |
+## Optional remaining work
 
-## Not done — exactly where to pick up
+1. `exp21` at 9B. Killed on CPU: 18 GB of weights on a 31 GB box left 0.9 GB free
+   and ran 5.2x slower per forward than 4B against a 2.25x parameter ratio, with
+   about 7.5 hours remaining. The RTX 5080 in this machine does not rescue it
+   either, at 16 GB VRAM against 36 GB for float32 or 18 GB for bfloat16.
+2. Re-derive the §3 polarity numbers with order blocked, for consistency with
+   §4.8. They use a different estimator and were not affected by the SE bug, but
+   it would be tidier.
+3. `exp18` (metagaming) never run; it is not referenced as a result anywhere.
 
-1. **`exp20` (numeral copying) is now DONE for Qwen3-0.6B** — 1584 prompts,
-   348 s, answer-set mass 1.00/1.00/0.986. The OOM is confirmed fixed by
-   `core.map_last_logits`. §3.6 is written up from the real numbers. Two things
-   to know:
+## Environment
 
-   - **The scheme table has a design defect.** `Task.incentive(side, hi, lo)`
-     attaches `hi` to the side it is handed, and `exp20` hands it the *hacking*
-     side — so five of the ten schemes (1/2, 3/5, 5/7, 2/4, 4/6) pay **more for
-     obeying**, contradicting the module docstring's claim that "the high payout
-     always goes to the conflicting side". This is why the "δ should be
-     constant" control fails. It does **not** contaminate the copying result
-     (the inverted schemes are balanced across the imbalance groups), and it
-     accidentally produced the best finding in the experiment. Fix by crossing
-     direction with numerals deliberately rather than re-running blind.
-   - Use `python src/exp20_analyse.py Qwen3-0.6B` for the breakdown; the
-     headline printed by `exp20_copying.py` itself (r = +0.21, "looks null") is
-     misleading because it pools the zero-payout and non-zero-payout schemes.
+`.venv` in the project root. Python 3.12.10, transformers 5.16.1, numpy 2.5.2.
+24 logical cores, 31 GB RAM, RTX 5080 Laptop with 16 GB VRAM. `test_patch.py`
+passes 4/4.
 
-   **Replicated on Qwen2.5-1.5B-Instruct** (766 s). Everything holds and the
-   copying slope is 3× larger there (+0.326 vs +0.106 nats per unit imbalance
-   in `parity`, against +0.030 and +0.016 in the numeral-free control). The
-   zero-payout δ effect appears in all six model × environment cells.
+`core.Runner` defaults to cpu/float32 and accepts `FORENSICS_DEVICE` and
+`FORENSICS_DTYPE`. float32 is deliberate, not an accident of running on CPU: the
+Qwen3.5-2B factorial was re-run on the GPU at float32 and reproduces the CPU
+output to every reported digit, in 131 s against 1825 s.
 
-   Open question the current scheme set **cannot** answer: the canonical "1
-   point / 0 points" has parity imbalance zero, so the imbalance channel
-   predicts no net push — yet p("1") = 0.71. The driver must be "copy the
-   numeral on the *rewarded* side", but every non-zero-imbalance scheme also
-   carries an odd numeral on the rewarded side, so the two are perfectly
-   confounded. **Add 2/1, 4/3, 6/5 (even numeral on the rewarded side, odd on
-   the other) to break it.** This is the highest-value small experiment left.
+**Machine note:** anything over roughly 10 GB of weights thrashes on 31 GB of RAM
+and slows superlinearly rather than proportionally. Measure per-forward
+throughput on the short `exp22` before committing to a long `exp21`.
 
-2. **Fill §5.4 (steering), §5.5 (CoT), §5.6 (patching)** once
-   `results/steer_*.json`, `results/cot_*.json`, `results/patch_*.json` exist.
-   Figures 6, 4, 7 are already written in `src/figures.py` and will render as
-   soon as those files appear.
+## Gotchas already paid for
 
-3. **Add SmolLM2-1.7B and Qwen3-1.7B to Tables 1–2** — just re-run
-   `python src/summary.py && python src/figures.py` after their `exp10`/`exp03`
-   land; both scripts auto-discover every `behaviour_*.json`.
-
-4. **`exp17` (MCQ) and `exp18` (metagaming) are written but unrun.** exp17 is
-   the answer to "your environments are toys" and is referenced in §6 (related
-   work, MCQ position bias) — worth prioritising if time is short. exp18 is
-   referenced in §3.4 and is currently a placeholder paragraph.
-
-5. **Re-check the abstract's numbers at the end.** The abstract quotes
-   "ρ ≈ 0.49", "0.04 nats", "median κ ≈ a fifth to a third" — all currently
-   correct, but they will need a pass once more models are in.
-
-## Two things a reader/reviewer will attack, and where they are handled
-
-- *"Unequal headroom between arms manufactures β."* It does not, because CLD is
-  a log-odds and a fixed logit push moves it by a fixed amount regardless of
-  starting point. Stated in §3.1 and in the `summary.py` docstring.
-- *"Your environments are degenerate toys."* `exp17` (MCQ where hacking means
-  answering knowably wrong) is the reply. Unrun — see item 4.
-
-## Gotchas already paid for (don't re-discover these)
-
-- HF `output_hidden_states` does **not** give `resid_post` of the last layer:
-  `hidden_states[n_layers]` is post-`model.norm`. `core.cache_resid` uses
-  forward hooks instead; `test_patch.py::T3` is the regression test.
-- Answer-slot prefill is per-environment: digits want `ANSWER: ` (trailing
-  space), words/letters want `ANSWER:` (no trailing space, and you score the
-  space-prefixed token `' A'`). Getting it backwards puts ~0 mass on the answer
-  set and CLD becomes meaningless. `SlotMetric` handles it; Control C catches it.
-- Sign convention: CLD is always `log P(disobey) − log P(obey)`. An earlier
-  version measured relative to the *incentivised* side, which silently flipped
-  the sign in `aligned` cells. `analyse.cell_vectors` recomputes from
-  `compliance` and asserts consistency.
-- Don't run two experiment processes at once *on the original 4-core box* —
-  they halve each other, which is why `run_pipeline.py` exists. This machine
-  has **24 logical cores**, so 2–3 concurrent runs are fine here provided you
-  cap threads per process (`$env:OMP_NUM_THREADS = 8`); torch otherwise grabs
-  everything and the processes contend anyway.
-- Don't pipe a background PowerShell job through `Select-Object`; it buffers the
-  whole stream and you see nothing until the job exits.
+- HuggingFace `output_hidden_states` does not give `resid_post` of the last
+  layer. `hidden_states[i]` is the input to layer `i` and
+  `hidden_states[n_layers]` is post-`model.norm`. `core.py` uses forward hooks;
+  `test_patch.py::T3` is the regression test.
+- Answer-slot prefill is per-environment. Digits want `ANSWER: ` with the
+  trailing space; words and letters want `ANSWER:` and you score the
+  space-prefixed token `' A'`. Getting it backwards puts almost no mass on the
+  answer set and makes CLD a ratio of two negligible numbers. `SlotMetric`
+  handles it and Control C catches it.
+- CLD is always `log P(disobey) − log P(obey)`. An earlier version measured
+  relative to the incentivised side, which silently flipped the sign in aligned
+  cells. `analyse.cell_vectors` recomputes from `compliance` and asserts
+  consistency.
+- On the original 4-core machine, two concurrent experiment processes halved each
+  other, which is why `run_pipeline.py` existed. This machine has 24 cores, so
+  two or three concurrent runs are fine if you cap `OMP_NUM_THREADS`.

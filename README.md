@@ -3,9 +3,10 @@
 A forensic audit of a reward-hacking probe. Six open-weight models, 0.6B–9B,
 everything on CPU.
 
-**Start here:** [`submission/MATS12_OddNumber_Submission.docx`](submission/) —
-executive summary, full write-up and all seven figures in one document. Or read
-[`paper/EXECUTIVE_SUMMARY.md`](paper/EXECUTIVE_SUMMARY.md) (591 words).
+**Start here:** [`submission/MATS12_OddNumber_Submission.docx`](submission/).
+It holds the executive summary, the full write-up and all eight figures in one
+document. Or read [`paper/EXECUTIVE_SUMMARY.md`](paper/EXECUTIVE_SUMMARY.md),
+which is 600 words.
 
 ---
 
@@ -23,13 +24,13 @@ block *says* about them, across six models (nats):
 | **word order alone** (disobedient named first vs last) | +4.60 | −0.09 | +1.21 | +0.16 | +0.45 |
 
 The quantity the environment is named after is its **smallest** component at
-every size tested — 2–12× under the mere fact of which option is flagged as
+every size tested: 2–12× under the mere fact of which option is flagged as
 paid, and at 0.6B an order of magnitude under the order of two clauses in one
 sentence.
 
 What scales with model size is **reward comprehension** (magnitude sensitivity
 inside a reward frame, as a fraction of the same model's sensitivity to the same
-comparison asked directly: 0% → 9% → 13% → 29% → 80% → 76%) and the
+comparison asked directly: 0%, 9%, 13%, 29%, 80%, 75%) and the
 disappearance of the word-order artifact. Not incentive-following.
 
 **It is not an artifact of toy tasks.** Rebuilt on a two-option MCQ the model can
@@ -42,7 +43,7 @@ answer is labelled (B).
 ## Two things worth stealing even if you ignore the rest
 
 **1. Always run the mirror arm.** Every instruction-conflict environment has two
-arms — instruct X and pay for not-X, or instruct not-X and pay for X — and
+arms: instruct X and pay for not-X, or instruct not-X and pay for X, and
 essentially nobody runs both. Running both splits the effect into a
 polarity-invariant δ and a content bias β that would have appeared whichever way
 the incentive pointed. It costs exactly 2× and it is the difference between a
@@ -57,7 +58,7 @@ check in the paper and it would have caught the problem immediately.
 
 ```
 paper/
-  EXECUTIVE_SUMMARY.md   591 words, the 60-second version
+  EXECUTIVE_SUMMARY.md   600 words, the 60-second version
   paper.md               the full write-up
   FORM_ANSWERS.md        application-form summary answers
   AUDIT.md               six rounds of self-audit -- read this one
@@ -93,11 +94,12 @@ python -m venv .venv
 .venv/Scripts/python src/fig_scaling.py
 ```
 
-Verified on Python 3.12.10 / torch 2.13.0+cpu / transformers 5.16.1. `exp21` is
+Verified on Python 3.12.10 and transformers 5.16.1, on both a CPU torch
+build and a CUDA one; float32 output is identical on either. `exp21` is
 3600 forwards: ~13 min at 0.6B, ~30 min at 2B, ~82 min at 4B.
 
 **Machine note:** anything over ~10 GB of weights thrashes on a 31 GB box and
-slows *superlinearly* — 9B ran 5.2× slower per forward than 4B against a 2.25×
+slows *superlinearly*: 9B ran 5.2× slower per forward than 4B against a 2.25×
 parameter ratio. Measure throughput on the short `exp22` before committing to a
 long `exp21`.
 
@@ -115,4 +117,4 @@ long `exp21`.
 - Check the answer set holds the probability mass. Ours averages 0.994.
 - Don't build a summary statistic that averages over the manipulated variable,
   or that folds a systematic factor into the noise term. This project shipped
-  two of those and both looked *unusually clean* — see `paper/AUDIT.md`.
+  two of those and both looked *unusually clean*: see `paper/AUDIT.md`.
