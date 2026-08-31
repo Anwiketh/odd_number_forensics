@@ -1,0 +1,28 @@
+﻿python.exe : Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher 
+rate limits and faster downloads.
+At line:3 char:1
++ & "$proj\.venv\Scripts\python.exe" "$proj\src\exp22_magnitude.py" Qwe ...
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (Warning: You ar...ster downloads.:String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+[transformers] `torch_dtype` is deprecated! Use `dtype` instead!
+
+Loading weights:   0%|          | 0/338 [00:00<?, ?it/s]
+Loading weights:  14%|█▍        | 49/338 [00:00<00:00, 488.11it/s]
+Loading weights:  30%|██▉       | 101/338 [00:00<00:00, 499.40it/s]
+Loading weights:  61%|██████    | 207/338 [00:00<00:00, 745.73it/s]
+Loading weights:  87%|████████▋ | 293/338 [00:00<00:00, 770.62it/s]
+Loading weights: 100%|██████████| 338/338 [00:00<00:00, 662.31it/s]
+Qwen2.5-1.5B-Instruct
+--- Probe A: does the answer track WHICH SIDE PAYS MORE? (nats) ---
+  loser paid ZERO  (1/0, 3/0, 5/0)   +11.25 +- 0.27   (n=72)
+  both paid  (3/1, 4/2, 5/3, 9/1, 2/1)  +1.20 +- 0.89   (n=120)
+--- Probe B: raw numeric comparison, no reward framing (nats) ---
+  same zero pairs                     +7.68 +- 0.38   (n=6)
+  same non-zero pairs                 +9.36 +- 0.90   (n=10)
+
+interpretation:
+  Probe B non-zero = +9.36  -> the model CAN compare these numbers
+  Probe A non-zero = +1.20  -> the reward framing does engage that ability
+saved.

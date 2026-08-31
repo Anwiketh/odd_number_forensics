@@ -1,0 +1,18 @@
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+C:\Users\anwik\Downloads\NEEL NANDA\odd_number_forensics\.venv\Lib\site-packages\huggingface_hub\file_download.py:141: UserWarning: `huggingface_hub` cache-system uses symlinks by default to efficiently store duplicated files but your machine does not support them in C:\Users\anwik\.cache\huggingface\hub\models--Qwen--Qwen3.5-2B. Caching files will still work but in a degraded version that might require more space on your disk. This warning can be disabled by setting the `HF_HUB_DISABLE_SYMLINKS_WARNING` environment variable. For more details, see https://huggingface.co/docs/huggingface_hub/how-to-cache#limitations.
+To support symlinks on Windows, you either need to activate Developer Mode or to run Python as an administrator. In order to activate developer mode, see this article: https://docs.microsoft.com/en-us/windows/apps/get-started/enable-your-device-for-development
+  warnings.warn(message)
+[transformers] `torch_dtype` is deprecated! Use `dtype` instead!
+Loading weights:   0%|          | 0/320 [00:00<?, ?it/s]Loading weights:   0%|          | 1/320 [00:00<00:42,  7.46it/s]Loading weights:  67%|######6   | 214/320 [00:00<00:00, 1093.23it/s]Loading weights: 100%|##########| 320/320 [00:00<00:00, 1004.56it/s]
+Qwen3.5-2B
+--- Probe A: does the answer track WHICH SIDE PAYS MORE? (nats) ---
+  loser paid ZERO  (1/0, 3/0, 5/0)    +4.07 +- 0.10   (n=72)
+  both paid  (3/1, 4/2, 5/3, 9/1, 2/1)  +1.71 +- 0.04   (n=120)
+--- Probe B: raw numeric comparison, no reward framing (nats) ---
+  same zero pairs                     +5.54 +- 0.23   (n=6)
+  same non-zero pairs                 +5.86 +- 0.26   (n=10)
+
+interpretation:
+  Probe B non-zero = +5.86  -> the model CAN compare these numbers
+  Probe A non-zero = +1.71  -> the reward framing does engage that ability
+saved.

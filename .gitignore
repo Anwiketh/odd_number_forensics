@@ -1,0 +1,14 @@
+# virtualenv (4.6 GB) and caches
+.venv/
+__pycache__/
+*.pyc
+*.pyo
+
+# model weights are pulled from HuggingFace on demand
+.cache/
+*.safetensors
+*.bin
+
+# scratch
+*.tmp
+de_out.txt

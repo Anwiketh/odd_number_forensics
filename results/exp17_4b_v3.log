@@ -1,0 +1,5 @@
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+[transformers] `torch_dtype` is deprecated! Use `dtype` instead!
+Fetching 2 files:   0%|          | 0/2 [00:00<?, ?it/s]Fetching 2 files: 100%|##########| 2/2 [00:00<00:00, 125.41it/s]
+Loading weights:   0%|          | 0/426 [00:00<?, ?it/s]Loading weights:   0%|          | 1/426 [00:01<07:28,  1.05s/it]Loading weights:  47%|####7     | 201/426 [00:01<00:00, 233.89it/s]Loading weights:  70%|#######   | 300/426 [00:02<00:01, 114.95it/s]Loading weights:  84%|########3 | 357/426 [00:03<00:00, 94.14it/s] Loading weights:  92%|#########2| 394/426 [00:04<00:00, 86.78it/s]Loading weights:  99%|#########8| 420/426 [00:07<00:00, 34.00it/s]Loading weights: 100%|##########| 426/426 [00:07<00:00, 57.95it/s]
+Qwen3.5-4B: 672 prompts

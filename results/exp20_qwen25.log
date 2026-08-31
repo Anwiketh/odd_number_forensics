@@ -1,0 +1,89 @@
+﻿python.exe : C:\Users\anwik\Downloads\NEEL 
+NANDA\odd_number_forensics\.venv\Lib\site-packages\huggingface_hub\file_download.py:141: UserWarning: 
+`huggingface_hub` cache-system uses symlinks by default to efficiently store duplicated files but your machine does 
+not support them in C:\Users\anwik\.cache\huggingface\hub\models--Qwen--Qwen2.5-1.5B-Instruct. Caching files will 
+still work but in a degraded version that might require more space on your disk. This warning can be disabled by 
+setting the `HF_HUB_DISABLE_SYMLINKS_WARNING` environment variable. For more details, see 
+https://huggingface.co/docs/huggingface_hub/how-to-cache#limitations.
+At line:4 char:1
++ & "$proj\.venv\Scripts\python.exe" "$proj\src\exp20_copying.py" Qwen/ ...
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (C:\Users\anwik\...he#limitations.:String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+To support symlinks on Windows, you either need to activate Developer Mode or to run Python as an administrator. In 
+order to activate developer mode, see this article: 
+https://docs.microsoft.com/en-us/windows/apps/get-started/enable-your-device-for-development
+  warnings.warn(message)
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits 
+and faster downloads.
+[transformers] `torch_dtype` is deprecated! Use `dtype` instead!
+
+Loading weights:   0%|          | 0/338 [00:00<?, ?it/s]
+Loading weights:  15%|█▌        | 51/338 [00:00<00:00, 486.09it/s]
+Loading weights:  30%|██▉       | 100/338 [00:00<00:01, 233.01it/s]
+Loading weights:  38%|███▊      | 130/338 [00:00<00:00, 223.62it/s]
+Loading weights:  46%|████▌     | 156/338 [00:00<00:00, 191.88it/s]
+Loading weights:  53%|█████▎    | 178/338 [00:00<00:00, 185.80it/s]
+Loading weights:  59%|█████▊    | 198/338 [00:00<00:00, 170.31it/s]
+Loading weights:  64%|██████▍   | 217/338 [00:01<00:00, 166.35it/s]
+Loading weights:  69%|██████▉   | 234/338 [00:01<00:00, 142.39it/s]
+Loading weights:  75%|███████▌  | 255/338 [00:01<00:00, 152.24it/s]
+Loading weights:  81%|████████▏ | 275/338 [00:01<00:00, 154.98it/s]
+Loading weights:  86%|████████▌ | 291/338 [00:01<00:00, 151.72it/s]
+Loading weights:  93%|█████████▎| 313/338 [00:01<00:00, 163.19it/s]
+Loading weights:  98%|█████████▊| 330/338 [00:01<00:00, 153.58it/s]
+Loading weights: 100%|██████████| 338/338 [00:01<00:00, 179.33it/s]
+Qwen2.5-1.5B-Instruct: 1584 prompts
+  parity done (251s)
+  magnitude done (528s)
+  letter done (766s)
+  parity answer-set mass = 0.9999
+  magnitude answer-set mass = 1.0000
+  letter answer-set mass = 0.9958
+
+=== parity ===
+scheme  n_odd-n_even    delta                beta
+1/0      +0           +9.35[+8.01,+10.71]  -1.48[-2.09,-0.80]
+3/0      +0          +10.89[+9.56,+12.19]  -0.68[-1.56,+0.26]
+1/2      +0           +6.77[+5.31,+8.31]  -1.15[-1.71,-0.63]
+3/5      +2           +6.38[+5.07,+7.81]  -0.70[-1.18,-0.27]
+5/7      +2           +6.35[+5.05,+7.80]  -0.34[-0.81,+0.11]
+9/3      +2           +6.22[+4.81,+7.84]  -0.33[-0.85,+0.11]
+2/4      -2           +6.44[+5.17,+7.87]  -1.67[-2.38,-1.01]
+4/6      -2           +6.23[+4.91,+7.67]  -1.55[-2.24,-0.91]
+8/2      -2           +6.38[+4.99,+7.95]  -2.08[-2.83,-1.34]
+words    +0           +9.38[+8.11,+10.71]  -2.22[-2.74,-1.69]
+  beta vs numeral parity imbalance: r=+0.905 slope=+0.326 nats per numeral
+  delta across schemes: mean=+7.22 sd=1.69  (should be ~constant)
+
+=== magnitude ===
+scheme  n_odd-n_even    delta                beta
+1/0      +0          +13.61[+11.88,+15.39]  -2.53[-3.17,-1.92]
+3/0      +0          +13.50[+11.78,+15.28]  -2.70[-3.40,-2.00]
+1/2      +0           +7.00[+5.50,+8.43]  -1.22[-1.91,-0.54]
+3/5      +2           +6.48[+5.00,+7.88]  -1.18[-2.01,-0.34]
+5/7      +2           +6.91[+5.29,+8.45]  -1.53[-2.28,-0.83]
+9/3      +2           +8.12[+6.44,+9.76]  -1.42[-2.05,-0.81]
+2/4      -2           +6.65[+5.16,+8.09]  -1.21[-1.89,-0.49]
+4/6      -2           +6.74[+5.18,+8.21]  -0.62[-1.27,+0.05]
+8/2      -2           +7.92[+6.34,+9.46]  -0.97[-1.66,-0.26]
+words    +0          +13.57[+11.85,+15.30]  -2.48[-3.10,-1.84]
+  beta vs numeral parity imbalance: r=-0.281 slope=-0.112 nats per numeral
+  delta across schemes: mean=+8.55 sd=2.89  (should be ~constant)
+
+=== letter ===
+scheme  n_odd-n_even    delta                beta
+1/0      +0           +8.14[+6.53,+9.81]  +2.36[+1.86,+2.89]
+3/0      +0           +8.03[+6.44,+9.65]  +2.11[+1.63,+2.59]
+1/2      +0           +5.66[+4.44,+6.83]  +2.61[+2.36,+2.86]
+3/5      +2           +5.58[+4.37,+6.71]  +2.43[+2.16,+2.70]
+5/7      +2           +5.58[+4.45,+6.69]  +2.53[+2.26,+2.81]
+9/3      +2           +5.73[+4.53,+6.94]  +2.44[+2.13,+2.75]
+2/4      -2           +5.45[+4.29,+6.67]  +2.34[+2.06,+2.60]
+4/6      -2           +5.12[+4.04,+6.21]  +2.18[+1.90,+2.48]
+8/2      -2           +5.55[+4.35,+6.82]  +2.52[+2.23,+2.81]
+words    +0           +8.01[+6.50,+9.52]  +2.41[+1.89,+2.98]
+  beta vs numeral parity imbalance: r=+0.320 slope=+0.030 nats per numeral
+  delta across schemes: mean=+6.09 sd=1.14  (should be ~constant)
+saved.

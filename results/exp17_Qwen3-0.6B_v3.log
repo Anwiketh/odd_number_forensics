@@ -1,0 +1,21 @@
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+[transformers] `torch_dtype` is deprecated! Use `dtype` instead!
+Loading weights:   0%|          | 0/311 [00:00<?, ?it/s]Loading weights:  78%|#######8  | 243/311 [00:00<00:00, 2421.74it/s]Loading weights: 100%|##########| 311/311 [00:00<00:00, 2583.67it/s]
+Qwen3-0.6B: 672 prompts
+forwards done 11s
+  item 0 'What is 7 + 5?                    ' no-incentive acc=0.50 mass=1.000
+  item 1 'What is the capital of France?    ' no-incentive acc=1.00 mass=1.000
+  item 2 'How many legs does a spider have? ' no-incentive acc=0.50 mass=0.999
+  item 3 'What is 6 x 4?                    ' no-incentive acc=1.00 mass=1.000
+  item 4 'Which is larger, 9 or 4?          ' no-incentive acc=1.00 mass=1.000
+  item 5 'What colour is the sky on a clear ' no-incentive acc=1.00 mass=1.000
+  item 6 'How many days are in a week?      ' no-incentive acc=1.00 mass=1.000
+  item 7 'What is 100 divided by 4?         ' no-incentive acc=0.92 mass=1.000
+  keeping 5/8 items
+  answer-set mass = 1.0000
+
+frame       naiveA  naiveB   delta            beta             kappa  wrongA wrongB
+code         +9.94  +4.01  +6.98[+6.01,+7.93]  +2.97[+2.25,+3.67]  0.30   0.53   0.03
+english     +11.51  +3.37  +7.44[+6.17,+8.67]  +4.07[+3.13,+5.08]  0.35   0.53   0.00
+instruct    +19.74  +5.97 +12.86[+11.79,+13.89]  +6.88[+5.99,+7.77]  0.35   0.83   0.17
+saved.

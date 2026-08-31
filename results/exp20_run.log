@@ -1,0 +1,67 @@
+﻿python.exe : Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher 
+rate limits and faster downloads.
+At line:4 char:1
++ & "$proj\.venv\Scripts\python.exe" "$proj\src\exp20_copying.py" Qwen/ ...
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (Warning: You ar...ster downloads.:String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+[transformers] `torch_dtype` is deprecated! Use `dtype` instead!
+
+Loading weights:   0%|          | 0/311 [00:00<?, ?it/s]
+Loading weights:  20%|█▉        | 62/311 [00:00<00:00, 609.58it/s]
+Loading weights:  72%|███████▏  | 224/311 [00:00<00:00, 1194.61it/s]
+Loading weights: 100%|██████████| 311/311 [00:00<00:00, 1224.46it/s]
+Qwen3-0.6B: 1584 prompts
+  parity done (110s)
+  magnitude done (233s)
+  letter done (348s)
+  parity answer-set mass = 1.0000
+  magnitude answer-set mass = 1.0000
+  letter answer-set mass = 0.9862
+
+=== parity ===
+scheme  n_odd-n_even    delta                beta
+1/0      +0           +6.43[+5.74,+7.13]  +2.13[+1.51,+2.77]
+3/0      +0           +5.94[+5.22,+6.67]  +1.78[+1.15,+2.44]
+1/2      +0           +2.47[+2.23,+2.69]  +0.04[-0.47,+0.63]
+3/5      +2           +2.28[+2.03,+2.53]  +0.17[-0.33,+0.71]
+5/7      +2           +2.68[+2.31,+3.06]  +0.39[-0.13,+0.95]
+9/3      +2           +2.16[+1.89,+2.43]  +0.18[-0.41,+0.80]
+2/4      -2           +1.55[+1.24,+1.85]  -0.24[-0.68,+0.27]
+4/6      -2           +2.13[+1.78,+2.45]  -0.00[-0.46,+0.51]
+8/2      -2           +2.31[+1.95,+2.66]  -0.29[-0.88,+0.37]
+words    +0           +6.29[+5.50,+7.07]  +1.39[+0.68,+2.12]
+  beta vs numeral parity imbalance: r=+0.210 slope=+0.106 nats per numeral
+  delta across schemes: mean=+3.10 sd=1.78  (should be ~constant)
+
+=== magnitude ===
+scheme  n_odd-n_even    delta                beta
+1/0      +0          +10.03[+9.52,+10.54]  -0.72[-1.53,+0.06]
+3/0      +0           +8.44[+8.05,+8.85]  -1.07[-1.91,-0.24]
+1/2      +0           +7.78[+7.38,+8.20]  -1.51[-2.07,-0.99]
+3/5      +2           +6.45[+6.10,+6.79]  -1.20[-1.74,-0.68]
+5/7      +2           +7.69[+7.33,+8.06]  -1.00[-1.48,-0.49]
+9/3      +2           +7.70[+7.26,+8.12]  -1.40[-1.92,-0.86]
+2/4      -2           +6.40[+6.11,+6.69]  -1.35[-1.95,-0.77]
+4/6      -2           +6.81[+6.44,+7.18]  -0.73[-1.19,-0.27]
+8/2      -2           +7.63[+7.20,+8.05]  -1.12[-1.72,-0.52]
+words    +0          +11.02[+10.45,+11.59]  -0.82[-1.66,-0.01]
+  beta vs numeral parity imbalance: r=-0.204 slope=-0.033 nats per numeral
+  delta across schemes: mean=+7.66 sd=1.12  (should be ~constant)
+
+=== letter ===
+scheme  n_odd-n_even    delta                beta
+1/0      +0          +15.55[+14.17,+16.86]  +6.57[+5.75,+7.35]
+3/0      +0          +14.52[+13.17,+15.87]  +5.96[+5.28,+6.63]
+1/2      +0           +7.87[+7.11,+8.68]  +3.62[+3.10,+4.19]
+3/5      +2           +6.24[+5.50,+7.02]  +2.33[+1.89,+2.76]
+5/7      +2           +6.56[+5.83,+7.35]  +2.46[+2.01,+2.88]
+9/3      +2           +8.34[+7.44,+9.25]  +3.92[+3.43,+4.36]
+2/4      -2           +5.70[+5.10,+6.34]  +2.15[+1.71,+2.59]
+4/6      -2           +6.31[+5.57,+7.09]  +2.60[+2.18,+2.98]
+8/2      -2           +8.49[+7.67,+9.29]  +3.76[+3.34,+4.15]
+words    +0          +10.79[+9.36,+12.10]  +6.10[+5.22,+6.96]
+  beta vs numeral parity imbalance: r=+0.017 slope=+0.016 nats per numeral
+  delta across schemes: mean=+8.84 sd=3.65  (should be ~constant)
+saved.
