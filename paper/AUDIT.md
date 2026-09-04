@@ -248,7 +248,7 @@ the contrast returns ~0 whether or not the model is following the incentive.
 
 Caught by noticing the null disagreed with the direction-resolved numbers in
 the same printout: `letter` at 4B showed hack-more +6.76, equal +5.57,
-obey-more +4.44 -- an obvious ordering -- while the real-minus-equal contrast
+obey-more +4.44, an obvious ordering, while the real-minus-equal contrast
 reported -0.73 +- 1.08. The correct statistic is the direction contrast; the
 broken one is retained in paper section 4.5 as a worked example.
 
@@ -257,7 +257,7 @@ broken one is retained in paper section 4.5 as a worked example.
 Recomputed independently of the write-up:
 
 - direction effect, both-paid only, order-averaged, 95% CI from condition-level
-variance -- 0.6B: +0.16 / -0.03 / +1.01 (none significant); 1.5B: +0.10 / +2.10
+variance. 0.6B: +0.16 / -0.03 / +1.01 (none significant); 1.5B: +0.10 / +2.10
 / +0.47 (none significant); 4B: +0.74 / +1.29 / +2.55 (all significant)
 - equal pay sits between the two directions in **9 of 9** cells, which is the
 positive control for the contrast being meaningful
@@ -271,7 +271,7 @@ letter value is the first significant one anywhere
 
 Small-alpha (|a| <= 0.35) response averaged over four held-out environments:
 own_conflict +5.46 (ceiling), loo_conflict +2.96, loo_content +2.50, random
--0.11. Transfer beats random; **specificity does not hold** -- the content
+-0.11. Transfer beats random; **specificity does not hold**: the content
 direction, at chance in the geometry (rho = 0.04), steers as well as the
 conflict direction. Answer-set mass falls to 0.61 (yesno) and 0.56 (letter)
 where the effects are largest, so the intervention is partly breaking the
@@ -282,7 +282,7 @@ support.
 
 `exp22` completed on **Qwen3.5-9B**: reward-framed +4.95 +- 0.13 against direct
 +6.55 +- 0.16 = **75%**. Comprehension curve is therefore 0% / 13% / 80% / 75%
-across 0.6B / 1.5B / 4B / 9B -- a step between 1.5B and 4B followed by a
+across 0.6B / 1.5B / 4B / 9B, a step between 1.5B and 4B followed by a
 plateau, which is a stronger shape than a monotone three-point rise.
 
 Note the 9B model's absolute scores are LOWER than the 4B model's on both
@@ -305,13 +305,13 @@ so explicitly. No four-point behavioural curve is implied anywhere.
 ## Round 5: Qwen3.5-2B (2026-08-31)
 
 Ran to fill the interval where the switch happens. Both experiments completed
-cleanly in 30 min (exp21) with no memory pressure -- 2B is ~4GB, so the
+cleanly in 30 min (exp21) with no memory pressure, since 2B is ~4GB, so the
 thrashing that killed 9B does not apply.
 
 - comprehension: **29.2%** (reward-framed +1.71 +- 0.04, direct +5.86 +- 0.26).
 Full curve 0% / 13% / 29% / 80% / 75% across 0.6B / 1.5B / 2B / 4B / 9B.
 - direction effect: **+0.46 [+0.30,+0.62], +1.10 [+0.24,+1.96], +0.83
-[+0.60,+1.06]** -- significant in **3 of 3** environments.
+[+0.60,+1.06]**, significant in **3 of 3** environments.
 - primacy: **+0.16** nats, the smallest of any model.
 - answer-set mass 0.9999 / 0.9998 / 0.9891.
 
@@ -325,7 +325,7 @@ significant while comprehension is only 29%; at 4B comprehension is 80% and the
 effect has roughly doubled. So the behavioural signal appears BEFORE
 comprehension is high and then grows with it, rather than both crossing at one
 point. The earlier "step then plateau" description of comprehension was also
-too strong -- with 2B in place the curve is a graded climb, steepest between 2B
+too strong: with 2B in place the curve is a graded climb, steepest between 2B
 and 4B.
 
 **Caveat now stated in all three documents:** only 2B/4B/9B are one family
@@ -337,7 +337,7 @@ location is approximate.
 
 Ran 0.8B to get an in-family point below 2B. It completed in 16 min (exp21) and
 produced comprehension 8.5%, direction effects +0.13/+0.23/+0.81, and a
-word-order artifact of **-0.09** nats -- the only model with essentially none.
+word-order artifact of **-0.09** nats, the only model with essentially none.
 
 That last number is what exposed the bug. With near-zero primacy, 0.8B had CI
 half-widths of ~0.1 nats while Qwen3-0.6B had ~4.6. "Small models are noisy"
@@ -347,14 +347,14 @@ make sense, so we checked the SE construction.
 **The bug.** The direction effect contrasts (3/1, 4/2) against (1/3, 2/4). We
 had pooled all four (config x mention-order) cells on each side and taken the
 variance across them. But mention order produces a large SYSTEMATIC shift in
-delta -- +4.60 nats on Qwen3-0.6B -- so that variance was dominated by a real
+delta (+4.60 nats on Qwen3-0.6B), so that variance was dominated by a real
 effect, not noise. The SE was inflated up to 8x, and worst precisely on the
 models with the biggest order effects.
 
 **What it cost.** The published claim "0 of 6 cells significant below 2B, 3 of
 3 at 4B, therefore a capability threshold near 2B" was an artifact. With order
 as a blocking factor the counts are 1/3, 3/3, 2/3, 3/3, 3/3 across
-0.6B/0.8B/1.5B/2B/4B -- **no threshold**. The effect is detectable at
+0.6B/0.8B/1.5B/2B/4B: **no threshold**. The effect is detectable at
 essentially every scale and simply small everywhere.
 
 | model | mean effect | blocked CI +- | old pooled CI +- | blocked sig |
@@ -368,8 +368,8 @@ essentially every scale and simply small everywhere.
 **The fix, and the lesson.** `src/direction_effect.py` now computes the
 contrast within each mention order and derives the SE from residual
 config-level spread. The paper was rewritten to lead with an **effect-size
-ratio** -- the incentive against the mere payment structure, 2-12x at every
-scale -- because that claim does not depend on any SE construction and so
+ratio**, the incentive against the mere payment structure at 2-12x at every
+scale, because that claim does not depend on any SE construction and so
 cannot be broken this way again.
 
 This is the third retraction in the project and the second of exactly this

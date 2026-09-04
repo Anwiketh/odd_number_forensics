@@ -18,8 +18,7 @@ answer-set mass 0.994. 24 surface variants per cell, bootstrap CIs, both arms ru
 **1. Nobody runs the mirror arm.** Running both splits the effect into a
 polarity-invariant part δ and a content bias β that would have appeared whichever
 way the incentive pointed. β is significant in 22 of 28 cells, median κ = 0.21,
-and its *sign* disagrees across models on the canonical environment, so it must be
-measured, not tabulated. The same model and incentive disobeys 92% or 42%
+and its *sign* disagrees across models on the canonical environment, so it must be measured. The same model and incentive disobeys 92% or 42%
 depending on which arm you ran.
 
 **2. The incentive is the smallest term in δ.** Holding the two answers fixed, I
@@ -37,8 +36,8 @@ each row against its own baseline:
 The quantity the environment is named after is 2 to 12 times smaller than the
 payment structure at every size, and at 0.6B an order of magnitude smaller than
 clause order. Amounts barely register: a regression knowing only *which* options
-are paid and which is named first reaches R² = 0.73 to 0.94; the point values add
-0.0 to 0.9 pp (F ≤ 1.10, n.s.).
+are paid and which is named first reaches R² = 0.73 to 0.94; point values
+add ≤ 0.9 pp (n.s.).
 
 **3. What scales is comprehension, not incentive-following.** Magnitude
 sensitivity in a reward frame, as a fraction of the same model's sensitivity asked
@@ -49,7 +48,7 @@ after 0.6B. A larger model is a cleaner instrument measuring the same wrong thin
 separate: the polarity-invariant one transfers across environments sharing no
 content (ρ = 0.49, chance 0.025), content directions sit at chance (ρ = 0.04).
 Steering confirms it, after I fixed my own test: I first contrasted the
-two directions without checking their cosine, which is +0.25 to +0.73 mid-network,
+two directions without checking their cosine (+0.25 to +0.73 mid-network),
 so they were never alternatives. With the shared part projected out,
 conflict-orthogonal-to-content keeps 62% and 90% of the ceiling on two models
 while content-orthogonal-to-conflict sits on the random floor. It is still not a *reward*
@@ -66,6 +65,7 @@ real incentive does, you are not measuring incentive-following.
 
 Single-token decisions, no rollouts, contentless environments. The six models
 span three families, so no step isolates scale, and the 9B factorial was killed
-under memory thrashing. I retracted my own headline three times: twice for over-generalising, once for a standard error
-that pooled a systematic factor into the noise term and invented a threshold that
-was not there. All three are in `AUDIT.md`.
+under memory thrashing. I retracted my own claims four times: twice for
+over-generalising, once for a standard error that invented a threshold, and
+once for a negative result my own broken comparison had manufactured. All four
+are in `AUDIT.md`.

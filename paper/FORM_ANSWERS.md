@@ -204,9 +204,10 @@ prompts for every condition are saved and were read by hand before running.
 > shipped, relevant coursework or work projects. The doc says non-standard
 > credentials are welcome and asks you to explain why each is relevant.
 >
-> If you want to point at this project, the strongest framing is the audit: three
-> retractions of my own headline, two of them caught by noticing that a statistic
-> looked too clean. That is better evidence than any individual number here.
+> If you want to point at this project, the strongest framing is the audit: four
+> retractions of my own claims, two caught by noticing that a statistic looked
+> too clean, and one that withdrew a negative result my own broken comparison
+> had manufactured. That is better evidence than any individual number here.
 
 ---
 

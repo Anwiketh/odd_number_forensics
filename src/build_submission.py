@@ -22,39 +22,45 @@ OUT = os.path.join(ROOT, "submission")
 os.makedirs(OUT, exist_ok=True)
 
 FIGMAP = {
-    1: ("fig1_arm_asymmetry.png",
-        "Figure 1 - Per-cell arm asymmetry. The same model and the same incentive "
+    # Numbered by order of first appearance in the assembled document, so the
+    # reader never meets a gap. The keys are the numbers the prose cites.
+    1: ("fig10_scaling.png",
+        "Figure 1 - The three effects across six models. The quantity the "
+        "environment claims to measure is the smallest of them at every size."),
+    2: ("fig1_arm_asymmetry.png",
+        "Figure 2 - Per-cell arm asymmetry. The same model and the same incentive "
         "give different disobedience rates depending on which arm you run."),
-    2: ("fig2_decomposition.png",
-        "Figure 2 - The polarity decomposition: polarity-invariant delta against "
+    3: ("fig2_decomposition.png",
+        "Figure 3 - The polarity decomposition: polarity-invariant delta against "
         "content bias beta, with bootstrap CIs over surface variants."),
-    3: ("fig3_comprehension.png",
-        "Figure 3 - Prior-free comprehension probe. The behavioural ordering "
+    4: ("fig9_payout.png",
+        "Figure 4 - exp21, the main result. Payout direction x zero-ness x "
+        "mention order. Every condition names the same two options, so the only "
+        "thing that varies is what the block says about them."),
+    5: ("fig8_copying.png",
+        "Figure 5 - exp20. Every bar is the same incentive, written with "
+        "different numerals."),
+    6: ("fig3_comprehension.png",
+        "Figure 6 - Prior-free comprehension probe. The behavioural ordering "
         "(code, prose, instruction) matches the comprehension ordering exactly."),
-    5: ("fig5_geometry.png",
-        "Figure 5 - Direction geometry against chance and the split-half "
+    7: ("fig5_geometry.png",
+        "Figure 7 - Direction geometry against chance and the split-half "
         "reliability ceiling. The conflict direction transfers across "
         "environments; the content directions sit at chance."),
-    6: ("fig6_transfer.png",
-        "Figure 6 - Leave-one-environment-out steering at layer 16. Top: the "
-        "steering response. Bottom: answer-set mass under the same perturbation "
-        "- where it collapses, the intervention has broken the model rather than "
-        "changed its mind."),
-    8: ("fig8_copying.png",
-        "Figure 8 - exp20. Every bar is the same incentive, written with "
-        "different numerals."),
-    9: ("fig9_payout.png",
-        "Figure 9 - exp21. Payout direction x zero-ness x mention order. Every "
-        "condition names the same two options."),
-    11: ("fig11_ortho.png",
-         "Figure 11 - exp24. A: the cosine between the two leave-one-out "
-         "directions, which is why the first causal test could not work. B: "
-         "which layers are causally effective at all, measured by the ceiling. "
-         "C: with the shared component projected out, conflict still steers and "
-         "content does not."),
-    10: ("fig10_scaling.png",
-         "Figure 10 - The three effects across six models. The quantity the "
-         "environment claims to measure is the smallest of them at every size."),
+    8: ("fig11_ortho.png",
+        "Figure 8 - exp24, the valid causal test. A: the cosine between the two "
+        "leave-one-out directions, which is why the first attempt could not "
+        "work. B: which layers are causally effective at all, measured by the "
+        "ceiling. C: with the shared component projected out, conflict still "
+        "steers and content does not."),
+    9: ("fig6_transfer.png",
+        "Figure 9 - exp16, the superseded first attempt, kept for the record. "
+        "Leave-one-environment-out steering at a single fixed layer (16), with "
+        "no orthogonalisation and no mass guard. Top: the steering response, on "
+        "which conflict (+2.96) and content (+2.50) look interchangeable. "
+        "Bottom: answer-set mass under the same perturbation. Where it "
+        "collapses, the intervention has broken the model rather than changed "
+        "its mind. Figure 8 is the valid version of this test."),
 }
 
 SYM = {"\\delta": "\u03b4", "\\beta": "\u03b2", "\\rho": "\u03c1",
@@ -88,6 +94,9 @@ def delatex(t):
     t = re.sub(r"_\{?([A-Za-z0-9]+)\}?", r"_\1", t)
     t = re.sub(r"\^\{?([A-Za-z0-9]+)\}?", r"^\1", t)
     t = re.sub(r"\\[A-Za-z]+", "", t)
+    # "\ " is a LaTeX thin space; the sweep above only eats letters, so
+    # without this a display equation renders as "+6.43\ [+5.75, +7.11]".
+    t = re.sub(r"\\(?=[\s()\[\],.])", "", t)
     return t.replace("{", "").replace("}", "").strip()
 
 
@@ -99,6 +108,27 @@ def clean(t):
     return CTRL.sub("", t).replace(chr(9), " ")
 
 
+# Characters markdown lets you escape with a leading backslash. The results
+# tables escape their significance asterisks so markdown does not read them as
+# emphasis; without undoing that here, the backslash reaches the page.
+MD_ESCAPABLE = set("*_|#[]()" + chr(96) + chr(92))
+
+
+def unesc(s):
+    """Undo markdown backslash escapes. Deliberately not a regex: the pattern
+    would need escaping twice and that is how the last two of these got in."""
+    B = chr(92)
+    out, i, n = [], 0, len(s)
+    while i < n:
+        if s[i] == B and i + 1 < n and s[i + 1] in MD_ESCAPABLE:
+            out.append(s[i + 1])
+            i += 2
+        else:
+            out.append(s[i])
+            i += 1
+    return "".join(out)
+
+
 def add_runs(par, text):
     text = clean(text)
     parts = re.split(r"(\*\*.+?\*\*|`[^`]+?`)", text)
@@ -106,7 +136,7 @@ def add_runs(par, text):
         if not piece:
             continue
         if piece.startswith("**") and piece.endswith("**"):
-            par.add_run(piece[2:-2]).bold = True
+            par.add_run(unesc(piece[2:-2])).bold = True
         elif piece.startswith("`") and piece.endswith("`"):
             r = par.add_run(piece[1:-1])
             r.font.name = "Consolas"
@@ -115,9 +145,9 @@ def add_runs(par, text):
             sub = re.split(r"(\*[^*]+?\*)", piece)
             for s in sub:
                 if s.startswith("*") and s.endswith("*") and len(s) > 2:
-                    par.add_run(s[1:-1]).italic = True
+                    par.add_run(unesc(s[1:-1])).italic = True
                 elif s:
-                    par.add_run(s)
+                    par.add_run(unesc(s))
 
 
 def add_figure(doc, n):
@@ -178,7 +208,8 @@ def render(doc, md, shown, base_level=1):
         p = doc.add_paragraph()
         add_runs(p, text)
         for n in sorted(FIGMAP):
-            if n not in shown and re.search(r"Figure " + str(n) + r"\b", text):
+            if n not in shown and re.search(
+                    r"Figure\s+" + str(n) + r"(?![0-9])", text):
                 if add_figure(doc, n):
                     shown.add(n)
 
@@ -258,12 +289,30 @@ def main():
     r.italic = True
     r.font.color.rgb = RGBColor(0x52, 0x51, 0x4E)
 
+    # He asks for an hours estimate and uses the code to brief his agents, so
+    # both belong above the fold rather than buried in an appendix.
+    prov = doc.add_paragraph()
+    for txt, bold in (("Code, figures and raw results: ", True),
+                      ("[PASTE REPO LINK]", True),
+                      ("    Every number and every figure in this document "
+                       "regenerates from the committed results/*.json.", False)):
+        rr = prov.add_run(txt)
+        rr.bold = bold
+        rr.font.size = Pt(9.5)
+    tm = doc.add_paragraph()
+    for txt, bold in (("Time spent: ", True), ("[FILL IN]", True),
+                      (" hours on the project, plus the 2 additional hours "
+                       "allowed for the write-up and executive summary.", False)):
+        rr = tm.add_run(txt)
+        rr.bold = bold
+        rr.font.size = Pt(9.5)
+
     doc.add_heading("Executive summary", level=1)
     ex = open(os.path.join(PAPER, "EXECUTIVE_SUMMARY.md"), encoding="utf-8").read()
     ex = re.sub(r"^#\s+.*\n", "", ex, count=1)
     render(doc, ex, shown, base_level=0)
-    if 10 not in shown and add_figure(doc, 10):
-        shown.add(10)
+    if 1 not in shown and add_figure(doc, 1):
+        shown.add(1)
 
     # He asks for randomly selected raw examples immediately after the summary.
     ex_path = os.path.join(OUT, "random_examples.md")
@@ -297,10 +346,10 @@ def main():
     doc.add_page_break()
     doc.add_heading("Appendix - what I verified, and what I got wrong", level=1)
     p = doc.add_paragraph()
-    add_runs(p, "This is the project's self-audit log: six rounds of checking my "
-                "own numbers against the raw results, three retractions of my own "
-                "headline, and a live defect found in my own experiment code. It "
-                "is included because the checking is part of the work.")
+    add_runs(p, "This is the project's self-audit log: seven rounds of checking "
+                "my own numbers against the raw results, four retractions of my "
+                "own claims, and a live defect found in my own experiment code. "
+                "It is included because the checking is part of the work.")
     render(doc, open(os.path.join(PAPER, "AUDIT.md"), encoding="utf-8").read(),
            shown, base_level=0)
 

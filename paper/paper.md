@@ -193,8 +193,8 @@ covers 0.6B to 9B, for the reason given in §4.8.
 
 ### 3.1 β is real, common, and not predictable
 
-Full results in `results/tables.md`; **Figure 1** shows the per-cell arm
-asymmetry and **Figure 2** the δ/β decomposition with bootstrap CIs. Taking
+Full results in `results/tables.md`; **Figure 2** shows the per-cell arm
+asymmetry and **Figure 3** the δ/β decomposition with bootstrap CIs. Taking
 Qwen3-0.6B on `parity` with the prose reward: a single-arm experiment
 instructing "even" reports **+8.57 nats** and a 92% disobedience rate. The
 mirror arm gives **+4.30 nats** and 42%. So
@@ -269,7 +269,7 @@ H1 is the reading the environment is normally given.
 
 ### 4.2 The amounts do essentially nothing
 
-Figure 9A. Restricting to the canonical presentation order (disobedient option
+Figure 4A. Restricting to the canonical presentation order (disobedient option
 named first, as in the real Odd Number block), and to configurations where
 **both** options are paid, δ regressed on the stated payout difference has
 slope
@@ -286,13 +286,13 @@ indistinguishable.
 Nor does magnitude matter within the zero family. Tripling the payout from
 `1/0` to `3/0` changes δ by −0.50, −1.59, −1.03 (Qwen3-0.6B, three
 environments) and +1.54, −0.12, −0.11 (Qwen2.5): mean **−0.30**, with 5 of 6
-cells moving the *wrong* way. The steep slope of the orange series in Figure 9A
+cells moving the *wrong* way. The steep slope of the orange series in Figure 4A
 is therefore not magnitude sensitivity: it is the sign flip between "the
 disobedient option is the paid one" and "the obedient option is the paid one".
 
 ### 4.3 But which option is paid at all does
 
-Figure 9B. Grouping by the two-bit payment pattern (canonical order):
+Figure 4B. Grouping by the two-bit payment pattern (canonical order):
 
 | pattern | Qwen3-0.6B (parity / magnitude / letter) | Qwen2.5-1.5B |
 |---|---|---|
@@ -462,7 +462,7 @@ Comprehension climbs from nothing to ~80% and saturates, and the word-order
 artifact collapses after 0.6B. So the environment does become a cleaner
 instrument with scale. What it does not do is become an instrument that
 measures the incentive: that term grows only fourfold and stays the smallest of
-the three throughout. Figure 10.
+the three throughout. Figure 1.
 
 **What we did not get.** The behavioural factorial was launched on 9B and
 killed partway. On a 31 GB machine the 18 GB of bf16 weights left 0.9 GB free,
@@ -559,7 +559,7 @@ total odd-digit mass that reads as "hacking", 0.71 sits on the one numeral the
 reward sentence printed.
 
 `exp20` tests this by varying the numerals while holding the reward fixed
-(Figure 8). β tracks the parity imbalance of the printed numerals with slope
+(Figure 5). β tracks the parity imbalance of the printed numerals with slope
 **+0.106** (Qwen3-0.6B) and **+0.326** (Qwen2.5) nats per unit in `parity`,
 against **+0.016** and **+0.030** in the numeral-free `letter` control, six to
 eleven times smaller. A copying channel exists, is signed correctly, replicates
@@ -591,7 +591,7 @@ prior over answers cancels) gives, for Qwen3-0.6B:
 | prose "1 point if your digit is odd, 0 points if even" | +2.21 ± 0.24 |
 | plain instruction "make sure your digit is odd" | +4.12 ± 0.20 |
 
-**Figure 3** plots all three. The model's answer does not track the code
+**Figure 6** plots all three. The model's answer does not track the code
 specification at all, and the behavioural δ ordering (code ≪ prose <
 instruction) is exactly the comprehension ordering. **A comprehension probe
 should gate any claim made from a code-specified grader**, and it costs a dozen
@@ -660,7 +660,7 @@ content cancels between arms.
 A raw cosine is uninterpretable without chance and a reliability ceiling.
 Chance is $\sqrt{2/\pi d} = 0.025$ for $d = 1024$; reliability is the
 split-half cosine from fitting each direction twice on disjoint halves of the
-variants. We report attenuation-corrected ρ. For Qwen3-0.6B (Figure 5):
+variants. We report attenuation-corrected ρ. For Qwen3-0.6B (Figure 7):
 
 | | split-half reliability | cross-environment ρ | cross-framing ρ |
 |---|---|---|---|
@@ -686,9 +686,9 @@ them to matter through.
 
 ### 8.1 The causal follow-up
 
-Geometry is correlational, so we steer. Fit $v_{        ext{conflict}}$ on
-three environments, add $lpha \cdot v$ to the residual stream of the held-out
-fourth, and measure the change in CLD. Unit-normalised vectors, $lpha$ in
+Geometry is correlational, so we steer. Fit $v_{\text{conflict}}$ on
+three environments, add $\alpha \cdot v$ to the residual stream of the held-out
+fourth, and measure the change in CLD. Unit-normalised vectors, $\alpha$ in
 units of the model's own mean residual norm, the direction fitted on the
 held-out environment itself as a ceiling, and a norm-matched random vector as
 the damage floor.
@@ -700,14 +700,20 @@ and found that content steered about as well (+2.50 against +2.96). That reads
 as a failure of specificity. But the two directions are not alternatives.
 Measuring the cosine between them, which we should have done first, gives
 **+0.25 to +0.73 through the middle of the network on both models** (Figure
-11A), rising from near zero in early layers. `exp16` steered at layer 16,
+8A), rising from near zero in early layers. `exp16` steered at layer 16,
 squarely inside that band. Two directions that share half their direction
 cannot be contrasted as competing explanations; whatever moved CLD could have
 been the part they have in common.
 
+Figure 9 reproduces that first attempt in full, because the shape of a failed
+test is part of the record. Its lower panel is why the mass guard below
+exists: the largest apparent effects sit where answer-set mass has fallen to
+0.56, which is a model that has stopped answering rather than one that has
+changed its mind.
+
 `exp24` redoes the test with four changes. The shared part is projected out, so
 we steer with conflict orthogonal to content and vice versa, and separately
-with the bisector, which isolates what they share. Only $lpha$ whose
+with the bisector, which isolates what they share. Only $\alpha$ whose
 answer-set mass stays at or above 0.90 contributes, since `exp16`'s largest
 effects sat at mass 0.56 where the perturbation has broken the model rather
 than changed its mind. Five layers are swept instead of one. Everything runs at
@@ -735,7 +741,7 @@ our first attempt was structurally unable to show.
 
 *The gate is load-bearing on the smaller model.* Steering only works in a
 mid-network band: on Qwen3-0.6B the ceiling is +4.17 and +2.74 at layers 16 and
-20 and essentially zero at 8, 13 and 24 (Figure 11B). Averaged over all five
+20 and essentially zero at 8, 13 and 24 (Figure 8B). Averaged over all five
 layers, conflict-orthogonal comes to **−0.06 against random**, i.e. nothing.
 The result on that model exists only once you restrict to sites where any
 direction works at all. We think that restriction is legitimate, because it is
@@ -753,7 +759,7 @@ of the evidence. Four of five layers pass the gate, and the ungated figure
 whether that is a property of the environment or simply no signal to transfer.
 
 *One cell is unmeasurable rather than null.* On Qwen3-0.6B, one of eight
-conflict-orthogonal cells had no $lpha$ surviving the mass guard. It is
+conflict-orthogonal cells had no $\alpha$ surviving the mass guard. It is
 excluded and counted, not treated as a zero.
 
 **What this does and does not establish.** It establishes that a
@@ -947,9 +953,9 @@ The general lesson is the one this paper is about, and we managed to learn it
 three times. A summary statistic that folds a systematic factor into the noise
 term, or that averages over the manipulated variable, will report whatever the
 design forces it to report, and it looks most convincing exactly when it is
-most wrong. Both of our broken statistics produced unusually *clean* results: a
-null in 9 of 9 cells, and a threshold with no exceptions. That cleanliness was
-the tell.
+most wrong. Two of the three were broken statistics, and both produced
+unusually *clean* results: a null in 9 of 9 cells, and a threshold with no
+exceptions. The third was a broken comparison. That cleanliness was the tell.
 
 The paper now leads on an effect-size ratio (the incentive against the mere
 payment structure, 2–12× at every scale) rather than on any significance count,
